@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff8f5">
+    <meta name="description" content="Crea tu cuenta en Get Away y comienza a planear tus próximas aventuras.">
+
+    <title>Crear cuenta | Get Away</title>
+
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="auth-body register-page">
+
+    <!-- Logo -->
+    <a class="brand auth-brand" href="index.html" aria-label="Get Away, volver al inicio">
+        <img class="logo-icon" src="logo.svg" alt="">
+        <span>Get Away</span>
+    </a>
+
+    <main class="auth-layout">
+
+        <!-- Panel ilustrado -->
+        <section class="auth-art" aria-labelledby="registerArtTitle">
+
+            <span class="eyebrow">EMPIEZA A SOÑAR</span>
+
+            <h2 id="registerArtTitle">Únete a Get Away</h2>
+
+            <svg
+                class="art-illustration"
+                viewBox="0 0 360 260"
+                role="img"
+                aria-label="Ilustración de una maleta frente a montañas y un camino"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <circle cx="150" cy="38" r="26" fill="#f8e3d3"/>
+
+                <g fill="#f3cdbd">
+                    <ellipse cx="62" cy="52" rx="20" ry="5"/>
+                    <ellipse cx="72" cy="47" rx="10" ry="6"/>
+                    <ellipse cx="268" cy="62" rx="22" ry="5"/>
+                    <ellipse cx="278" cy="56" rx="11" ry="7"/>
+                </g>
+
+                <g fill="none" stroke="#a94f4b" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M200 36q4-5 8 0q4-5 8 0"/>
+                    <path d="M228 52q3-4 6 0q3-4 6 0"/>
+                    <path d="M92 62q3-4 6 0q3-4 6 0"/>
+                </g>
+
+                <path
+                    d="M0 172 L70 128 L120 152 L192 86 L262 142 L305 120 L360 166 L360 260 L0 260Z"
+                    fill="#cb7b6e"
+                />
+
+                <path d="M192 86 L172 114 L184 108 L194 120 L202 106 L214 114Z" fill="#fbe3d6"/>
+
+                <path d="M0 192 Q80 150 170 195 L170 260 L0 260Z" fill="#b85a52"/>
+                <path d="M360 178 Q300 150 236 200 L236 260 L360 260Z" fill="#a94f4b"/>
+
+                <path
+                    d="M208 146 C168 160 168 176 210 188 C252 200 240 232 172 260 L278 260 C312 226 302 200 256 186 C216 174 228 160 218 146Z"
+                    fill="#fbe3d6"
+                />
+
+                <g stroke="#e0a58f" stroke-width="3" stroke-linecap="round">
+                    <path d="M214 176l6 4"/>
+                    <path d="M236 206l4 6"/>
+                    <path d="M226 232l-2 6"/>
+                </g>
+
+                <path d="M40 175 Q28 120 50 84 Q72 120 60 175Z" fill="#a94f4b"/>
+
+                <g fill="#b85a52">
+                    <ellipse cx="34" cy="198" rx="16" ry="7" transform="rotate(-25 34 198)"/>
+                    <ellipse cx="62" cy="200" rx="16" ry="7" transform="rotate(25 62 200)"/>
+                    <ellipse cx="300" cy="212" rx="18" ry="8" transform="rotate(-20 300 212)"/>
+                    <ellipse cx="332" cy="206" rx="16" ry="8" transform="rotate(25 332 206)"/>
+                </g>
+
+                <g>
+                    <path d="M92 124 V102 H112 V124" fill="none" stroke="#7a2f2f" stroke-width="5" stroke-linejoin="round"/>
+
+                    <rect
+                        x="72"
+                        y="122"
+                        width="58"
+                        height="102"
+                        rx="9"
+                        fill="#f6d2c4"
+                        stroke="#7a2f2f"
+                        stroke-width="2"
+                    />
+
+                    <g stroke="#e3a894" stroke-width="3">
+                        <path d="M86 134v78"/>
+                        <path d="M101 134v78"/>
+                        <path d="M116 134v78"/>
+                    </g>
+
+                    <circle cx="86" cy="230" r="5" fill="#5a1f1f"/>
+                    <circle cx="116" cy="230" r="5" fill="#5a1f1f"/>
+                </g>
+            </svg>
+
+            <p>
+                Tu próxima aventura comienza aquí.<br>
+                Crea tu cuenta y empieza<br>
+                a planear sin complicaciones.
+            </p>
+
+           
+            </a>
+
+        </section>
+
+        <!-- Formulario de registro -->
+        <section class="auth-panel" aria-labelledby="registerTitle">
+
+            <h1 id="registerTitle">¡Bienvenido a Get Away!</h1>
+
+            <p class="muted">
+                Crea tu cuenta y prepara tu próxima escapada.
+            </p>
+
+            <!-- Google requiere configurar autenticación real antes de activarse -->
+            <button class="btn-google" type="button" id="googleRegisterButton">
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.4-4.8 7.1l7.6 5.9c4.4-4.1 7-10.1 7-17.5z"/>
+                    <path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/>
+                    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/>
+                </svg>
+
+                Registrarse con Google
+            </button>
+
+            <div class="divider"><span>o con tu correo</span></div>
+
+            <form id="registerForm" class="form-stack" novalidate>
+
+                <label for="registerName">
+                    Nombre completo
+                    <input
+                        id="registerName"
+                        name="name"
+                        type="text"
+                        required
+                        minlength="2"
+                        maxlength="100"
+                        placeholder="Tu nombre completo"
+                        autocomplete="name"
+                    >
+                </label>
+
+                <label for="registerEmail">
+                    Correo electrónico
+                    <input
+                        id="registerEmail"
+                        name="email"
+                        type="email"
+                        required
+                        maxlength="254"
+                        placeholder="ejemplo@correo.com"
+                        autocomplete="email"
+                        inputmode="email"
+                    >
+                </label>
+
+                <label for="registerPassword">
+                    Contraseña
+                    <input
+                        id="registerPassword"
+                        name="password"
+                        type="password"
+                        minlength="8"
+                        maxlength="128"
+                        required
+                        placeholder="Mínimo 8 caracteres"
+                        autocomplete="new-password"
+                        aria-describedby="passwordHint"
+                    >
+                </label>
+
+                <small id="passwordHint" class="field-hint">
+                    Usa al menos 8 caracteres y evita contraseñas fáciles de adivinar.
+                </small>
+
+                <label for="confirmPassword">
+                    Confirmar contraseña
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        minlength="8"
+                        maxlength="128"
+                        required
+                        placeholder="Escribe nuevamente tu contraseña"
+                        autocomplete="new-password"
+                    >
+                </label>
+
+                <label class="terms" for="acceptTerms">
+                    <input
+                        id="acceptTerms"
+                        name="acceptTerms"
+                        type="checkbox"
+                        required
+                    >
+                    <span>Acepto las condiciones de uso del proyecto.</span>
+                </label>
+
+                <button class="button button-wide" type="submit">
+                    CREAR CUENTA
+                </button>
+
+                <p
+                    id="registerMessage"
+                    class="form-message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+            </form>
+
+            <p class="auth-switch">
+                ¿Ya tienes cuenta?
+                <a href="login.html">Inicia sesión</a>
+            </p>
+
+            <p class="auth-back">
+                <a href="index.html">← Volver al inicio</a>
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+</html>

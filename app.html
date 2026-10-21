@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff8f5">
+    <meta name="description" content="Descubre destinos nacionales e internacionales y crea itinerarios personalizados con Get Away.">
+
+    <title>Mi escapada | Get Away</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* Mejoras exclusivas del inicio: conserva la identidad de Get Away */
+
+        .dashboard-body {
+            overflow-x: hidden;
+        }
+
+        .dash-main {
+            min-width: 0;
+        }
+
+        .welcome-row {
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .welcome-row > div {
+            min-width: 0;
+        }
+
+        .current-trip {
+            overflow: hidden;
+        }
+
+        .current-trip > img {
+            width: 100%;
+            min-width: 0;
+            height: 100%;
+            min-height: 280px;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+
+        .home-section {
+            margin-top: 38px;
+        }
+
+        .home-section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .home-section-heading h2 {
+            margin-bottom: 5px;
+        }
+
+        .home-section-heading p {
+            margin-top: 0;
+        }
+
+        .travel-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .travel-photo-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            background: #fff;
+            border: 1px solid rgba(189, 87, 53, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(80, 48, 37, 0.06);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .travel-photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(80, 48, 37, 0.12);
+        }
+
+        .travel-photo-wrap {
+            position: relative;
+            height: 225px;
+            overflow: hidden;
+            background: #f3ded7;
+        }
+
+        .travel-photo-wrap img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s ease;
+        }
+
+        .travel-photo-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .travel-photo-tag {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+            padding: 7px 12px;
+            border-radius: 30px;
+            background: rgba(255, 248, 245, .94);
+            color: #98442d;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+
+        .travel-photo-info {
+            padding: 18px;
+        }
+
+        .travel-photo-info h3 {
+            margin: 0 0 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+        }
+
+        .travel-photo-info p {
+            margin: 0 0 14px;
+            color: #786966;
+            font-size: .87rem;
+            line-height: 1.7;
+        }
+
+        .travel-photo-link {
+            color: #bd5735;
+            font-size: .83rem;
+            font-weight: 600;
+        }
+
+        .inspiration-card {
+            position: relative;
+            isolation: isolate;
+            min-height: 255px;
+            overflow: hidden;
+            background: #ead5cb;
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            border-radius: 20px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            text-decoration: none;
+        }
+
+        .inspiration-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(
+                180deg,
+                rgba(28, 20, 17, .04) 0%,
+                rgba(28, 20, 17, .78) 100%
+            );
+        }
+
+        .inspiration-card > * {
+            position: relative;
+        }
+
+        .inspiration-card h3 {
+            color: white;
+            margin: 10px 0 7px;
+        }
+
+        .inspiration-card p {
+            color: #fff8f5;
+            line-height: 1.6;
+        }
+
+        .inspiration-card b {
+            color: white;
+        }
+
+        .inspiration-card span {
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .inspiration-beach {
+            background-image: url("https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .inspiration-adventure {
+            background-image: url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .inspiration-culture {
+            background-image: url("https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=85");
+        }
+
+        .home-trips-empty {
+            padding: 24px;
+            text-align: center;
+            background: #fff;
+            border: 1px dashed #dfb6a7;
+            border-radius: 18px;
+        }
+
+        .home-trips-empty img {
+            width: 100%;
+            max-width: 280px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
+        .home-trips-empty p {
+            color: #786966;
+            line-height: 1.7;
+        }
+
+        .home-trips-empty .button {
+            display: inline-flex;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .travel-photo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .travel-photo-wrap {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .dash-top {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .dashboard-shell {
+                display: block;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .dash-main {
+                width: 100%;
+                padding: 22px 16px 100px;
+            }
+
+            .welcome-row {
+                align-items: flex-start;
+            }
+
+            .welcome-row h1 {
+                font-size: clamp(1.8rem, 7vw, 2.5rem);
+                line-height: 1.2;
+            }
+
+            .welcome-row > .button {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .current-trip {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .current-trip > div {
+                order: 1;
+            }
+
+            .current-trip > img {
+                order: 0;
+                min-height: 210px;
+                max-height: 250px;
+                border-radius: 16px;
+            }
+
+            .trip-meta {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .travel-photo-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .travel-photo-wrap {
+                height: 225px;
+            }
+
+            .inspiration-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .inspiration-card {
+                min-height: 230px;
+            }
+
+            .home-section {
+                margin-top: 30px;
+            }
+
+            .home-section-heading {
+                align-items: flex-start;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                z-index: 1000;
+                right: 12px;
+                bottom: 12px;
+                left: 12px;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 5px;
+                background: rgba(255, 248, 245, .96);
+                border: 1px solid rgba(189, 87, 53, .14);
+                border-radius: 20px;
+                box-shadow: 0 8px 30px rgba(65, 42, 32, .14);
+                backdrop-filter: blur(15px);
+            }
+
+            .mobile-nav a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                min-width: 48px;
+                color: #704d43;
+                text-decoration: none;
+                font-size: 1.2rem;
+            }
+
+            .mobile-nav small {
+                font-family: 'Poppins', sans-serif;
+                font-size: .65rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .travel-photo-card,
+            .travel-photo-card img {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+<header class="dash-top">
+    <a class="brand" href="app.html" aria-label="Get Away, inicio">
+        <img class="logo-icon" src="logo.svg" alt="Logo de Get Away">
+        Get Away
+    </a>
+
+    <div class="dash-top-right">
+        <a class="profile-shortcut" href="perfil.html">
+            <span class="avatar" id="navAvatar">V</span>
+            <span id="navUser">Mi cuenta</span>
+        </a>
+        <button id="logoutButton" class="text-link" type="button">
+            Salir
+        </button>
+    </div>
+</header>
+
+<div class="dashboard-shell">
+
+    <aside class="sidebar">
+        <a class="side-link active" href="app.html">⌂ <span>Inicio</span></a>
+        <a class="side-link" href="viajes.html">♡ <span>Mis viajes</span></a>
+        <a class="side-link" href="explorar.html">✧ <span>Explorar destinos</span></a>
+        <a class="side-link" href="crear-viaje.html">＋ <span>Crear viaje</span></a>
+        <a class="side-link" href="perfil.html">♙ <span>Mi perfil</span></a>
+        <a class="side-link" href="configuracion.html">⚙ <span>Configuración</span></a>
+
+        <div class="side-bottom">
+            ✦ Haz espacio para nuevas aventuras.
+        </div>
+    </aside>
+
+    <main class="dash-main">
+
+        <section class="welcome-row">
+            <div>
+                <p class="eyebrow">TU PRÓXIMA HISTORIA COMIENZA AQUÍ</p>
+                <h1>¡Hola de nuevo, <span id="welcomeUser">viajera</span>!</h1>
+                <p class="muted">
+                    Hay lugares que todavía no sabes que te van a enamorar.
+                </p>
+            </div>
+
+            <a href="crear-viaje.html" class="button">
+                + Crear mi aventura
+            </a>
+        </section>
+
+        <!-- AVENTURA DESTACADA -->
+        <section class="current-trip">
+            <div>
+                <span class="pill">✦ TU PRÓXIMA AVENTURA</span>
+                <h2>El mundo te está esperando</h2>
+                <p>
+                    Desde las playas del Caribe hasta las calles de Japón,
+                    diseña una experiencia que se adapte a ti.
+                </p>
+
+                <div class="trip-meta">
+                    <span>✦ Destinos nacionales e internacionales</span>
+                    <span>♡ Planes a tu estilo</span>
+                </div>
+
+                <a href="crear-viaje.html" class="button button-small">
+                    DISEÑAR MI VIAJE ↗
+                </a>
+            </div>
+
+            <img
+                src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=85"
+                alt="Paisaje de lago rodeado de montañas"
+                fetchpriority="high"
+            >
+        </section>
+
+        <!-- DESTINOS PARA DESCUBRIR -->
+        <section class="home-section">
+            <div class="home-section-heading">
+                <div>
+                    <p class="eyebrow">TU PRÓXIMA INSPIRACIÓN</p>
+                    <h2>Un mundo por descubrir</h2>
+                    <p class="muted">
+                        Lugares que pueden convertirse en tu próxima historia.
+                    </p>
+                </div>
+
+                <a class="text-link" href="explorar.html">
+                    Explorar todos ↗
+                </a>
+            </div>
+
+            <div class="travel-photo-grid">
+
+                <a class="travel-photo-card"
+                   href="crear-viaje.html"
+                   data-destination="Cartagena">
+                    <div class="travel-photo-wrap">
+                        <img
+                            src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?auto=format&fit=crop&w=900&q=85"
+                            alt="Calles tradicionales y arquitectura japonesa"
+                            loading="lazy"
+                        >
+                        <span class="travel-photo-tag">Internacional</span>
+                    </div>
+                    <div class="travel-photo-info">
+                        <h3>Kioto, Japón</h3>
+                        <p>
+                            Templos, jardines tradicionales, cultura japonesa
+                            y experiencias gastronómicas.
+                        </p>
+                        <span class="travel-photo-link">Planear escapada ↗</span>
+                    </div>
+                </a>
+
+                <a class="travel-photo-card"
+                   href="crear-viaje.html"
+                   data-destination="Cartagena">
+                    <div class="travel-photo-wrap">
+                        <img
+                            src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=85"
+                            alt="Costa mediterránea con casas blancas y mar azul"
+                            loading="lazy"
+                        >
+                        <span class="travel-photo-tag">Internacional</span>
+                    </div>
+                    <div class="travel-photo-info">
+                        <h3>Santorini, Grecia</h3>
+                        <p>
+                            Pueblos blancos, paisajes junto al mar,
+                            atardeceres y cocina mediterránea.
+                        </p>
+                        <span class="travel-photo-link">Planear escapada ↗</span>
+                    </div>
+                </a>
+
+                <a class="travel-photo-card"
+                   href="crear-viaje.html"
+                   data-destination="Cartagena">
+                    <div class="travel-photo-wrap">
+                        <img
+                            src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=85"
+                            alt="Templo tradicional rodeado de vegetación en Bali"
+                            loading="lazy"
+                        >
+                        <span class="travel-photo-tag">Internacional</span>
+                    </div>
+                    <div class="travel-photo-info">
+                        <h3>Bali, Indonesia</h3>
+                        <p>
+                            Naturaleza tropical, templos, playas
+                            y experiencias de bienestar.
+                        </p>
+                        <span class="travel-photo-link">Planear escapada ↗</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- VIAJES GUARDADOS -->
+        <section class="home-section">
+            <div class="section-title compact">
+                <div>
+                    <p class="eyebrow">TUS RECUERDOS POR CREAR</p>
+                    <h2>Mis escapadas</h2>
+                </div>
+
+                <a class="text-link" href="viajes.html">Ver todas ↗</a>
+            </div>
+
+            <section id="homeTrips" class="mini-destinations">
+                <div class="home-trips-empty">
+                    <img
+                        src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=85"
+                        alt="Pasaporte y artículos para preparar un viaje"
+                        loading="lazy"
+                    >
+                    <h3>Tu próxima aventura comienza aquí</h3>
+                    <p>
+                        Cuando guardes un itinerario, aparecerá aquí para
+                        que puedas consultarlo y seguir organizando tu viaje.
+                    </p>
+                    <a href="crear-viaje.html" class="button button-small">
+                        Crear mi primer viaje ↗
+                    </a>
+                </div>
+            </section>
+        </section>
+
+        <!-- INSPIRACIÓN -->
+        <section class="planner-panel home-section">
+            <div class="section-title compact">
+                <div>
+                    <p class="eyebrow">ENCUENTRA TU ESTILO</p>
+                    <h2>¿Qué tipo de viajera eres?</h2>
+                </div>
+            </div>
+
+            <div class="inspiration-grid">
+
+                <a class="inspiration-card inspiration-beach"
+                   href="explorar.html?tipo=playa">
+                    <span>01 / RELAX</span>
+                    <h3>Necesito mar</h3>
+                    <p>Sol, playas y tiempo para respirar.</p>
+                    <b>Descubrir destinos ↗</b>
+                </a>
+
+                <a class="inspiration-card inspiration-adventure"
+                   href="explorar.html?tipo=aventura">
+                    <span>02 / EXPLORAR</span>
+                    <h3>Quiero aventura</h3>
+                    <p>Naturaleza, caminos y nuevas historias.</p>
+                    <b>Descubrir destinos ↗</b>
+                </a>
+
+                <a class="inspiration-card inspiration-culture"
+                   href="explorar.html?tipo=cultura">
+                    <span>03 / CULTURA</span>
+                    <h3>Quiero sorprenderme</h3>
+                    <p>Ciudades, sabores y culturas diferentes.</p>
+                    <b>Descubrir destinos ↗</b>
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<nav class="mobile-nav" aria-label="Navegación móvil">
+    <a href="app.html"><span>⌂</span><small>Inicio</small></a>
+    <a href="explorar.html"><span>✧</span><small>Explorar</small></a>
+    <a href="crear-viaje.html"><span>＋</span><small>Planear</small></a>
+    <a href="viajes.html"><span>♡</span><small>Mis viajes</small></a>
+    <a href="perfil.html"><span>♙</span><small>Perfil</small></a>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>

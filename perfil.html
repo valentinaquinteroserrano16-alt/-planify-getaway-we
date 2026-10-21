@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi perfil | Get Away</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-body">
+<header class="dash-top">
+    <a class="brand" href="app.html"><img class="logo-icon" src="logo.svg" alt="">Get Away</a>
+    <button id="logoutButton" class="text-link" type="button">Salir</button>
+</header>
+<div class="dashboard-shell">
+    <aside class="sidebar">
+        <a class="side-link" href="app.html">⌂ <span>Inicio</span></a>
+        <a class="side-link" href="viajes.html">♡ <span>Mis viajes</span></a>
+        <a class="side-link" href="explorar.html">✧ <span>Explorar destinos</span></a>
+        <a class="side-link active" href="perfil.html">♙ <span>Mi perfil</span></a>
+        <a class="side-link" href="configuracion.html">⚙ <span>Configuración</span></a>
+    </aside>
+    <main class="dash-main">
+        <p class="eyebrow">ESTE ESPACIO ES TUYO</p>
+        <h1>Mi <span class="accent-text">perfil.</span></h1>
+        <section class="profile-panel">
+            <div class="profile-avatar-large" id="profileAvatar">V</div>
+            <h2 id="profileName">Viajera</h2>
+            <p id="profileEmail" class="muted"></p>
+            <p><strong id="profileTrips">0</strong> viajes guardados</p>
+        </section>
+        <section class="planner-panel">
+            <h2>Editar información</h2>
+            <form id="profileForm" class="simple-form">
+                <label>Nombre para mostrar
+                    <input id="editName" required maxlength="60" placeholder="Tu nombre">
+                </label>
+                <button class="button" type="submit">Guardar cambios</button>
+                <p id="profileMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+</div>
+<nav class="mobile-nav">
+    <a href="app.html">⌂<small>Inicio</small></a>
+    <a href="viajes.html">♡<small>Viajes</small></a>
+    <a href="crear-viaje.html">✧<small>Planear</small></a>
+    <a href="perfil.html">♙<small>Perfil</small></a>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>

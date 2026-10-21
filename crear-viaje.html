@@ -1,0 +1,1262 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff8f5">
+    <title>Crear mi aventura | Get Away</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #fff8f5;
+            --white: #ffffff;
+            --terracotta: #bd5735;
+            --terracotta-dark: #98442d;
+            --rose: #f3ded7;
+            --rose-light: #fbefea;
+            --text: #49342e;
+            --muted: #8b7770;
+            --border: #eadbd4;
+            --shadow: 0 12px 35px rgba(117, 66, 49, .09);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background: var(--cream);
+            line-height: 1.6;
+        }
+
+        button, input, select { font: inherit; }
+        button { cursor: pointer; }
+        img { max-width: 100%; }
+        [hidden] { display: none !important; }
+
+        .topbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 6%;
+            background: rgba(255,255,255,.88);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 29px;
+            font-weight: 700;
+            color: var(--terracotta);
+            text-decoration: none;
+            letter-spacing: -.8px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 23px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .nav a:hover { color: var(--terracotta); }
+
+        .nav .nav-cta {
+            padding: 10px 17px;
+            color: white;
+            background: var(--terracotta);
+            border-radius: 24px;
+        }
+
+        .page {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+            padding: 42px 0 70px;
+        }
+
+        .intro {
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            align-items: center;
+            gap: 38px;
+            margin-bottom: 36px;
+        }
+
+        .eyebrow {
+            color: var(--terracotta);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(36px, 5vw, 58px);
+            margin: 13px 0;
+            letter-spacing: -1.4px;
+        }
+
+        .intro p {
+            max-width: 560px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .intro-image {
+            position: relative;
+            height: 290px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-label {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            padding: 13px 16px;
+            color: white;
+            background: rgba(57,37,30,.58);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0,1.25fr) minmax(280px,.75fr);
+            align-items: start;
+            gap: 25px;
+        }
+
+        .panel, .preview {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel { padding: clamp(20px,4vw,35px); }
+
+        .progress {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 8px;
+            border-bottom: 3px solid var(--rose);
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .progress-item span {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--rose-light);
+            flex-shrink: 0;
+        }
+
+        .progress-item.active {
+            color: var(--terracotta);
+            border-color: var(--terracotta);
+            font-weight: 600;
+        }
+
+        .progress-item.active span {
+            color: white;
+            background: var(--terracotta);
+        }
+
+        .step h2, .result h2 {
+            margin: 0 0 8px;
+            font-size: 29px;
+        }
+
+        .step-desc {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 0 0 24px;
+        }
+
+        .field { margin-bottom: 20px; }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            min-height: 49px;
+            padding: 12px 14px;
+            color: var(--text);
+            background: #fffdfc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .field input:focus, .field select:focus {
+            border-color: var(--terracotta);
+            box-shadow: 0 0 0 3px rgba(189,87,53,.1);
+        }
+
+        .two-cols {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 15px;
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 12px;
+        }
+
+        .style-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 78px;
+            padding: 12px;
+            text-align: left;
+            color: var(--text);
+            background: #fffdfc;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            transition: .2s;
+        }
+
+        .style-option:hover, .style-option.selected {
+            border-color: var(--terracotta);
+            background: var(--rose-light);
+            transform: translateY(-2px);
+        }
+
+        .style-option.selected {
+            box-shadow: 0 0 0 2px rgba(189,87,53,.1);
+        }
+
+        .style-option img {
+            width: 60px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .style-option strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .style-option small {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 47px;
+            padding: 12px 20px;
+            border: 1px solid transparent;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--terracotta);
+        }
+
+        .btn-primary:hover { background: var(--terracotta-dark); }
+
+        .btn-secondary {
+            color: var(--terracotta);
+            background: white;
+            border-color: var(--border);
+        }
+
+        .btn-secondary:hover { background: var(--rose-light); }
+
+        .preview { position: sticky; top: 20px; }
+
+        .preview-image {
+            display: block;
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: var(--rose);
+        }
+
+        .preview-content { padding: 22px; }
+
+        .preview-content h3 {
+            font-size: 25px;
+            margin: 7px 0 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .preview-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--rose-light);
+            font-size: 11px;
+        }
+
+        .preview-line span { color: var(--muted); }
+
+        .preview-line strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .preview-note {
+            margin-top: 17px;
+            padding: 13px;
+            background: var(--rose-light);
+            border-radius: 13px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .result { margin-top: 0; }
+
+        .result-hero img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 18px;
+            margin: 18px 0;
+        }
+
+        .result-hero p { color: var(--muted); font-size: 12px; }
+
+        .day-list {
+            display: grid;
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .day-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: white;
+        }
+
+        .day-card img {
+            width: 100%;
+            height: 220px;
+            display: block;
+            object-fit: cover;
+            background: var(--rose);
+        }
+
+        .day-content { padding: 20px; }
+
+        .day-label {
+            color: var(--terracotta);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .day-content h3 { font-size: 23px; margin: 8px 0; }
+        .day-content p { font-size: 12px; color: var(--muted); }
+
+        .day-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 14px;
+        }
+
+        .day-meta span {
+            padding: 7px 10px;
+            border-radius: 20px;
+            background: var(--rose-light);
+            color: var(--terracotta-dark);
+            font-size: 10px;
+        }
+
+        .budget-card {
+            background: var(--rose-light);
+            border-radius: 18px;
+            padding: 22px;
+            margin: 22px 0;
+        }
+
+        .budget-card strong {
+            display: block;
+            color: var(--terracotta);
+            font-size: 30px;
+            overflow-wrap: anywhere;
+        }
+
+        .budget-card p { color: var(--muted); font-size: 11px; }
+        .message { color: var(--terracotta-dark); font-size: 12px; margin-top: 12px; }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        @media (max-width: 850px) {
+            .intro { grid-template-columns: 1fr; gap: 20px; }
+            .intro-image { height: 260px; }
+            .layout { grid-template-columns: 1fr; }
+            .preview { position: static; }
+        }
+
+        @media (max-width: 520px) {
+            .topbar { align-items: flex-start; flex-direction: column; gap: 12px; }
+            .nav { gap: 12px; }
+            .nav a { font-size: 11px; }
+            .page { width: 92%; padding-top: 28px; }
+            .intro-image { height: 210px; }
+            .panel { padding: 18px 14px; border-radius: 18px; }
+            .progress { gap: 5px; }
+            .progress-item { flex-direction: column; text-align: center; gap: 5px; padding: 8px 3px; }
+            .progress-item span { width: 25px; height: 25px; }
+            .two-cols, .style-grid { grid-template-columns: 1fr; }
+            .style-option { min-height: 70px; }
+            .actions { flex-wrap: wrap; }
+            .actions .btn { flex: 1; padding: 12px 10px; }
+            .preview-image { height: 190px; }
+            .day-card img { height: 185px; }
+            .budget-card strong { font-size: 25px; }
+        }
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <a class="logo" href="app.html">Get Away.</a>
+    <nav class="nav" aria-label="Navegación principal">
+        <a href="app.html">Inicio</a>
+        <a href="explorar.html">Explorar</a>
+        <a href="viajes.html">Mis viajes</a>
+        <a href="perfil.html">Mi perfil</a>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="intro">
+        <div>
+            <span class="eyebrow">Tu historia merece un viaje</span>
+            <h1>Diseña una aventura que se sienta tuya.</h1>
+            <p>Elige tu destino, tus fechas y la forma en que quieres vivirlo. Get Away te propone una ruta para empezar a soñar y organizar tu próxima escapada.</p>
+        </div>
+        <div class="intro-image">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85"
+                 alt="Montañas y paisaje para inspirar tu próxima aventura"
+                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80'">
+            <div class="image-label">Nuevos lugares. Nuevas historias. Tu próxima aventura comienza aquí.</div>
+        </div>
+    </section>
+
+    <div class="layout">
+        <section class="panel">
+            <div class="progress" aria-label="Progreso del itinerario">
+                <div class="progress-item active" data-progress="1"><span>1</span>Destino</div>
+                <div class="progress-item" data-progress="2"><span>2</span>Experiencia</div>
+                <div class="progress-item" data-progress="3"><span>3</span>Presupuesto</div>
+            </div>
+
+            <form id="tripForm">
+                <section class="step" data-step="1">
+                    <h2>¿A dónde nos vamos?</h2>
+                    <p class="step-desc">Comencemos por el lugar que tienes en mente.</p>
+
+                    <div class="field">
+                        <label for="destination">Destino de tu aventura</label>
+                        <input id="destination" name="destination" type="text"
+                               placeholder="Ej. Cartagena, Colombia" required
+                               list="destinationSuggestions" autocomplete="off">
+                        <datalist id="destinationSuggestions">
+                            <option value="Cartagena, Colombia">
+                            <option value="Santa Marta, Colombia">
+                            <option value="San Andrés, Colombia">
+                            <option value="Medellín, Colombia">
+                            <option value="Kioto, Japón">
+                            <option value="Tokio, Japón">
+                            <option value="París, Francia">
+                            <option value="Roma, Italia">
+                            <option value="Santorini, Grecia">
+                            <option value="Bali, Indonesia">
+                        </datalist>
+                    </div>
+
+                    <div class="two-cols">
+                        <div class="field">
+                            <label for="startDate">Fecha de salida</label>
+                            <input id="startDate" name="startDate" type="date" required>
+                        </div>
+                        <div class="field">
+                            <label for="endDate">Fecha de regreso</label>
+                            <input id="endDate" name="endDate" type="date" required>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <a class="btn btn-secondary" href="explorar.html">Volver a explorar</a>
+                        <button class="btn btn-primary" id="next1" type="button">Continuar →</button>
+                    </div>
+                </section>
+
+                <section class="step" data-step="2" hidden>
+                    <h2>¿Cómo quieres vivirlo?</h2>
+                    <p class="step-desc">Escoge la experiencia que más va contigo.</p>
+
+                    <input type="hidden" id="travelStyle" value="playa">
+
+                    <div class="style-grid">
+                        <button type="button" class="style-option selected" data-style="playa">
+                            <img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=200&q=75" alt="Playa">
+                            <span><strong>Mar y descanso</strong><small>Sol, playa y calma</small></span>
+                        </button>
+                        <button type="button" class="style-option" data-style="aventura">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=200&q=75" alt="Montañas">
+                            <span><strong>Aventura</strong><small>Naturaleza y emoción</small></span>
+                        </button>
+                        <button type="button" class="style-option" data-style="cultura">
+                            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=200&q=75" alt="Templo tradicional">
+                            <span><strong>Cultura</strong><small>Historia y arte</small></span>
+                        </button>
+                        <button type="button" class="style-option" data-style="gastronomia">
+                            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=200&q=75" alt="Comida">
+                            <span><strong>Gastronomía</strong><small>Sabores por descubrir</small></span>
+                        </button>
+                        <button type="button" class="style-option" data-style="ciudad">
+                            <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=200&q=75" alt="Ciudad">
+                            <span><strong>Vida urbana</strong><small>Calles y rincones</small></span>
+                        </button>
+                        <button type="button" class="style-option" data-style="romantico">
+                            <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=200&q=75" alt="Paisaje romántico">
+                            <span><strong>Romántica</strong><small>Momentos especiales</small></span>
+                        </button>
+                    </div>
+
+                    <div class="two-cols" style="margin-top:22px">
+                        <div class="field">
+                            <label for="travelers">¿Cuántas personas viajan?</label>
+                            <select id="travelers" name="travelers" required>
+                                <option value="1">1 persona</option>
+                                <option value="2">2 personas</option>
+                                <option value="3">3 personas</option>
+                                <option value="4">4 personas</option>
+                                <option value="5">5 o más personas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="back2" type="button">← Atrás</button>
+                        <button class="btn btn-primary" id="next2" type="button">Continuar →</button>
+                    </div>
+                </section>
+
+                <section class="step" data-step="3" hidden>
+                    <h2>Tu presupuesto ideal</h2>
+                    <p class="step-desc">Define cuánto quieres destinar al viaje completo, en pesos colombianos.</p>
+
+                    <div class="field">
+                        <label for="budget">Presupuesto total (COP)</label>
+                        <input id="budget" name="budget" type="number" min="1" step="1000" placeholder="Ej. 750000" required>
+                    </div>
+
+                    <div class="preview-note">
+                        Este valor es tu límite de presupuesto, no una cotización. Verifica alojamiento, transporte, entradas y comidas antes de reservar.
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="back3" type="button">← Atrás</button>
+                        <button class="btn btn-primary" type="submit">Crear mi itinerario ✦</button>
+                    </div>
+                </section>
+            </form>
+
+            <section id="tripResult" class="result" hidden>
+                <span class="eyebrow">Hecho para ti</span>
+                <h2>Tu próxima aventura</h2>
+                <div id="tripDetails"></div>
+                <div class="actions">
+                    <button type="button" id="editTripButton" class="btn btn-secondary">Editar viaje</button>
+                    <button type="button" id="saveTripButton" class="btn btn-primary">Guardar viaje ♡</button>
+                </div>
+                <p id="saveMessage" class="message" role="status" aria-live="polite"></p>
+                <p style="font-size:11px;color:var(--muted)">Las imágenes son ilustrativas y los planes son sugerencias. Confirma horarios, acceso y tarifas con cada proveedor.</p>
+            </section>
+        </section>
+
+        <aside class="preview">
+            <img id="previewImage" class="preview-image"
+                 src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
+                 alt="Inspiración para tu viaje">
+            <div class="preview-content">
+                <span class="eyebrow">Tu escapada</span>
+                <h3 id="previewDestination">Tu próximo destino</h3>
+                <div class="preview-line"><span>Experiencia</span><strong id="previewStyle">Mar y descanso</strong></div>
+                <div class="preview-line"><span>Viajeros</span><strong id="previewTravelers">1 persona</strong></div>
+                <div class="preview-line"><span>Duración</span><strong id="previewDuration">Por definir</strong></div>
+                <div class="preview-line"><span>Presupuesto</span><strong id="previewBudget">Por definir</strong></div>
+                <div class="preview-note">Cada viaje empieza con una idea. Vamos a convertir la tuya en un plan.</div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<footer class="footer">Get Away · Viaja a tu manera, crea tus propias historias.</footer>
+
+<script>
+(() => {
+    "use strict";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const $ = id => document.getElementById(id);
+        const form = $("tripForm");
+        if (!form) return;
+
+        const fallback = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80";
+
+        // Fotografías alternativas con URL distintas.
+        const extraImages = [
+            "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1000&q=85",
+            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85"
+        ];
+
+        const catalog = {
+            "cartagena": {
+                name: "Cartagena, Colombia",
+                image:"https://commons.wikimedia.org/wiki/Special:FilePath/Cartagena_old_town.JPG?width=1200",
+                places: [
+                    ["Ciudad Amurallada", "Recorre calles coloniales, descubre balcones coloridos y disfruta de su encanto histórico.", "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad","romantico"], "2–3 horas", "Recorrido a pie sin costo obligatorio"],
+                    ["Castillo de San Felipe", "Explora una fortaleza histórica y conoce parte de la historia de Cartagena.", "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1000&q=85", ["cultura","aventura"], "1–2 horas", "Consultar tarifa vigente"],
+                    ["Getsemaní", "Descubre plazas, murales y calles llenas de expresión artística.", "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "1–2 horas", "Paseo libre; consumos opcionales"],
+                    ["Sabores del Caribe", "Prueba pescado, arroz con coco, patacones y cocina local.", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"],
+                    ["Día de playa", "Disfruta del paisaje caribeño y organiza una excursión marítima si las condiciones lo permiten.", "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85", ["playa","aventura","romantico"], "Medio día", "Transporte y actividades variables"]
+                ]
+            },
+            "santa marta": {
+                name: "Santa Marta, Colombia",
+                image: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["El Rodadero", "Descansa junto al mar y pasea por la playa.", "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85", ["playa","romantico"], "2–4 horas", "Consumos y actividades variables"],
+                    ["Parque de los Novios", "Conoce una zona animada para caminar y encontrar restaurantes.", "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=85", ["ciudad","gastronomia"], "1–2 horas", "Recorrido libre"],
+                    ["Parque Tayrona", "Planea un día de naturaleza y senderos. Comprueba cierres y condiciones oficiales.", "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1000&q=85", ["aventura","playa"], "Medio día o día completo", "Consultar entradas y transporte"],
+                    ["Cocina samaria", "Descubre preparaciones tradicionales de la costa.", "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el establecimiento"]
+                ]
+            },
+            "san andres": {
+                name: "San Andrés, Colombia",
+                image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Spratt Bight", "Camina junto a la playa urbana y disfruta de los tonos del mar.", "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85", ["playa","romantico"], "2–3 horas", "Acceso a la playa sin costo obligatorio"],
+                    ["Tour por los cayos", "Consulta operadores autorizados para conocer los paisajes marinos.", "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1000&q=85", ["aventura","playa"], "Medio día", "Consultar operador"],
+                    ["Cultura raizal", "Aprende sobre las tradiciones de la isla y sus comunidades.", "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "1–2 horas", "Transporte variable"],
+                    ["Gastronomía isleña", "Prueba preparaciones con pescado, coco y sabores tradicionales.", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"]
+                ]
+            },
+            "medellin": {
+                name: "Medellín, Colombia",
+                image: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Comuna 13", "Descubre murales y arte urbano que cuentan historias de transformación.", "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "2–3 horas", "Recorrido libre o tour de pago"],
+                    ["Museos y arte", "Organiza una visita cultural y revisa las tarifas vigentes.", "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=1000&q=85", ["cultura"], "2–3 horas", "Consultar entrada"],
+                    ["Jardín y naturaleza", "Dedica tiempo a espacios verdes y colecciones de plantas.", "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85", ["aventura","naturaleza"], "1–2 horas", "Verificar acceso"],
+                    ["Café colombiano", "Prueba café de origen y descubre los sabores locales.", "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=85", ["gastronomia","ciudad"], "1–2 horas", "Según el establecimiento"]
+                ]
+            },
+            "kioto": {
+                name: "Kioto, Japón",
+                image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Fushimi Inari", "Recorre los senderos de sus famosas puertas torii rojas.", "https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?auto=format&fit=crop&w=1000&q=85", ["cultura","aventura"], "2–3 horas", "Acceso general gratuito"],
+                    ["Templos históricos", "Conoce la arquitectura y las tradiciones locales.", "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85", ["cultura","romantico"], "1–2 horas", "Consultar entradas"],
+                    ["Arashiyama", "Camina por el entorno natural del bosque de bambú.", "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85", ["naturaleza","aventura"], "1–2 horas", "Transporte variable"],
+                    ["Sabores de Kioto", "Prueba dulces tradicionales y platos de la región.", "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"]
+                ]
+            },
+            "tokio": {
+                name: "Tokio, Japón",
+                image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Shibuya", "Explora el famoso cruce, las tiendas y el movimiento urbano.", "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1000&q=85", ["ciudad","romantico"], "2–3 horas", "Paseo libre"],
+                    ["Sensō-ji", "Conoce un templo histórico y sus calles comerciales cercanas.", "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "2 horas", "Acceso general gratuito"],
+                    ["Meiji Jingū", "Disfruta de un entorno arbolado y conoce tradiciones locales.", "https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?auto=format&fit=crop&w=1000&q=85", ["cultura","naturaleza"], "1–2 horas", "Transporte variable"],
+                    ["Mercados y cocina", "Prueba especialidades japonesas en comercios locales.", "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según lo que consumas"]
+                ]
+            },
+            "paris": {
+                name: "París, Francia",
+                image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Torre Eiffel", "Admira el monumento emblemático y planifica con anticipación si quieres subir.", "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1000&q=85", ["ciudad","romantico"], "1–3 horas", "Consultar entradas oficiales"],
+                    ["Museo del Louvre", "Explora arte e historia y selecciona salas antes de tu visita.", "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=85", ["cultura"], "3–4 horas", "Consultar entradas"],
+                    ["Montmartre", "Pasea por calles artísticas y disfruta de sus vistas.", "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "2–3 horas", "Recorrido libre"],
+                    ["Panadería francesa", "Prueba croissants, crêpes o platos locales.", "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el establecimiento"]
+                ]
+            },
+            "roma": {
+                name: "Roma, Italia",
+                image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Coliseo Romano", "Conoce uno de los grandes monumentos de la antigua Roma.", "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1000&q=85", ["cultura","aventura"], "2–4 horas", "Consultar entradas"],
+                    ["Fontana di Trevi", "Admira la arquitectura barroca y recorre sus alrededores.", "https://images.unsplash.com/photo-1525874684015-58379d421a52?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad","romantico"], "30–60 minutos", "Consultar condiciones vigentes"],
+                    ["Calles históricas", "Explora plazas, arquitectura y rincones del centro histórico.", "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1000&q=85", ["cultura"], "1–2 horas", "Paseo libre"],
+                    ["Pasta y gelato", "Prueba especialidades italianas en negocios locales.", "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"]
+                ]
+            },
+            "santorini": {
+                name: "Santorini, Grecia",
+                image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Oia", "Descubre calles blancas y vistas al mar Egeo.", "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad","romantico"], "2–3 horas", "Paseo libre"],
+                    ["Fira", "Recorre la capital de la isla y contempla la caldera.", "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=1000&q=85", ["ciudad","romantico"], "2 horas", "Transporte variable"],
+                    ["Paisaje volcánico", "Explora la costa y verifica las condiciones de acceso.", "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1000&q=85", ["playa","aventura"], "1–2 horas", "Transporte variable"],
+                    ["Cocina griega", "Prueba especialidades locales en un restaurante de la isla.", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"]
+                ]
+            },
+            "bali": {
+                name: "Bali, Indonesia",
+                image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=85",
+                places: [
+                    ["Terrazas de arroz", "Contempla los paisajes agrícolas y conoce el entorno rural.", "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=85", ["naturaleza","aventura"], "1–2 horas", "Puede haber tarifas locales"],
+                    ["Ubud", "Recorre mercados, tiendas y espacios culturales.", "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1000&q=85", ["cultura","ciudad"], "2–3 horas", "Compras opcionales"],
+                    ["Templo tradicional", "Conoce un templo y respeta las normas locales de vestimenta.", "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1000&q=85", ["cultura"], "1–2 horas", "Consultar acceso"],
+                    ["Cocina balinesa", "Prueba nasi goreng, mie goreng y otros platos locales.", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=85", ["gastronomia"], "1–2 horas", "Según el restaurante"],
+                    ["Una tarde junto al mar", "Elige una playa accesible y comprueba las condiciones del mar.", "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85", ["playa","romantico"], "2–3 horas", "Transporte y servicios variables"]
+                ]
+            }
+        };
+
+        const styleNames = {
+            playa: "Mar y descanso",
+            aventura: "Aventura",
+            cultura: "Cultura",
+            gastronomia: "Gastronomía",
+            ciudad: "Vida urbana",
+            romantico: "Escapada romántica"
+        };
+
+        let currentTrip = null;
+        let editingId = null;
+
+        function normalize(value) {
+            return String(value || "").trim().toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[.,]/g, "").replace(/\s+/g, " ");
+        }
+
+        function getDestination(raw) {
+            const value = normalize(raw);
+            const aliases = {
+                "cartagena colombia": "cartagena",
+                "santa marta colombia": "santa marta",
+                "san andres colombia": "san andres",
+                "medellin colombia": "medellin",
+                "kioto japon": "kioto",
+                "kyoto japon": "kioto",
+                "kyoto japan": "kioto",
+                "tokio japon": "tokio",
+                "tokyo japon": "tokio",
+                "tokyo japan": "tokio",
+                "paris francia": "paris",
+                "roma italia": "roma",
+                "rome italy": "roma",
+                "santorini grecia": "santorini",
+                "bali indonesia": "bali"
+            };
+
+            const key = aliases[value] || value;
+            if (catalog[key]) return catalog[key];
+
+            const found = Object.keys(catalog).find(name =>
+                key.includes(name) || name.includes(key)
+            );
+
+            return found ? catalog[found] : {
+                name: raw.trim(),
+                image: fallback,
+                places: []
+            };
+        }
+
+        function safe(value) {
+            return String(value ?? "").replace(/[&<>"']/g, ch => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;",
+                '"': "&quot;", "'": "&#39;"
+            })[ch]);
+        }
+
+        function money(value) {
+            return Number(value || 0).toLocaleString("es-CO", {
+                style: "currency", currency: "COP", maximumFractionDigits: 0
+            });
+        }
+
+        function prettyDate(value) {
+            if (!value) return "Por definir";
+            return new Date(value + "T12:00:00").toLocaleDateString("es-CO", {
+                day: "numeric", month: "short", year: "numeric"
+            });
+        }
+
+        function numberOfDays() {
+            const start = $("startDate").value;
+            const end = $("endDate").value;
+            if (!start || !end) return 0;
+
+            return Math.round((
+                new Date(end + "T12:00:00") - new Date(start + "T12:00:00")
+            ) / 86400000) + 1;
+        }
+
+        function peopleText(value) {
+            const count = Number(value || 1);
+            return count >= 5 ? "5 o más personas" :
+                count + (count === 1 ? " persona" : " personas");
+        }
+
+        function updatePreview() {
+            const destination = $("destination").value.trim();
+            const info = getDestination(destination);
+
+            $("previewDestination").textContent = destination || "Tu próximo destino";
+            $("previewStyle").textContent = styleNames[$("travelStyle").value] || "Por elegir";
+            $("previewTravelers").textContent = peopleText($("travelers").value);
+            $("previewDuration").textContent = numberOfDays() > 0
+                ? numberOfDays() + (numberOfDays() === 1 ? " día" : " días")
+                : "Por definir";
+            $("previewBudget").textContent = $("budget").value
+                ? money($("budget").value) : "Por definir";
+
+            $("previewImage").src = destination ? info.image : fallback;
+            $("previewImage").alt = destination
+                ? "Paisaje de " + info.name : "Inspiración para viajar";
+        }
+
+        function showStep(number) {
+            document.querySelectorAll(".step").forEach(section => {
+                section.hidden = Number(section.dataset.step) !== number;
+            });
+
+            document.querySelectorAll("[data-progress]").forEach(item => {
+                item.classList.toggle("active", Number(item.dataset.progress) <= number);
+            });
+
+            $("tripResult").hidden = true;
+            form.hidden = false;
+        }
+
+        function validateDates() {
+            if (!$("destination").reportValidity()) {
+                showStep(1);
+                return false;
+            }
+
+            if (!$("startDate").reportValidity() || !$("endDate").reportValidity()) {
+                showStep(1);
+                return false;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const start = new Date($("startDate").value + "T00:00:00");
+            const end = new Date($("endDate").value + "T00:00:00");
+
+            if (start < today) {
+                alert("Elige una fecha de salida de hoy en adelante.");
+                return false;
+            }
+
+            if (end < start) {
+                alert("La fecha de regreso no puede ser anterior a la salida.");
+                return false;
+            }
+
+            if (numberOfDays() > 30) {
+                alert("Elige un viaje de  30 días.");
+                return false;
+            }
+
+            return true;
+        }
+
+        // Asignacion una imagen distinta a cada día siempre que haya URLs disponibles.
+        function getUniqueImage(preferredImage, usedImages) {
+            if (preferredImage && !usedImages.has(preferredImage)) {
+                usedImages.add(preferredImage);
+                return preferredImage;
+            }
+
+            const alternative = extraImages.find(image => !usedImages.has(image));
+            if (alternative) {
+                usedImages.add(alternative);
+                return alternative;
+            }
+
+            const uniqueImage = extraImages[usedImages.size % extraImages.length] +
+                "&day=" + (usedImages.size + 1);
+            usedImages.add(uniqueImage);
+            return uniqueImage;
+        }
+
+        function buildTrip() {
+            const raw = $("destination").value.trim();
+            const info = getDestination(raw);
+            const style = $("travelStyle").value;
+            const days = numberOfDays();
+            const places = info.places || [];
+            const matching = places.filter(place => place[3].includes(style));
+            const chosen = matching.length >= 2 ? matching : places;
+
+            const activities = [...chosen];
+            for (let i = activities.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [activities[i], activities[j]] = [activities[j], activities[i]];
+            }
+
+            const usedImages = new Set();
+
+            const itinerary = Array.from({ length: days }, (_, index) => {
+                const date = new Date($("startDate").value + "T12:00:00");
+                date.setDate(date.getDate() + index);
+
+                let place;
+                if (activities.length) {
+                    place = activities[index % activities.length];
+                } else {
+                    place = [
+                        index === 0 ? "Llegada y primer recorrido" : "Explora un nuevo rincón",
+                        "Organiza una visita a " + info.name +
+                        ". Busca lugares de interés, confirma horarios y revisa los precios antes de reservar.",
+                        info.image, [], "Por planificar", "Consultar en el lugar"
+                    ];
+                }
+
+                const image = getUniqueImage(place[2] || info.image, usedImages);
+
+                return {
+                    day: index + 1,
+                    date: date.getFullYear() + "-" +
+                        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+                        String(date.getDate()).padStart(2, "0"),
+                    title: place[0],
+                    description: place[1],
+                    image,
+                    time: place[4] || "Por definir",
+                    cost: place[5] || "Consultar en el lugar"
+                };
+            });
+
+            currentTrip = {
+                id: editingId || Date.now(),
+                destination: raw,
+                destinationName: info.name,
+                image: info.image,
+                startDate: $("startDate").value,
+                endDate: $("endDate").value,
+                style,
+                styleName: styleNames[style],
+                travelers: $("travelers").value,
+                budget: Number($("budget").value),
+                days,
+                itinerary,
+                createdAt: new Date().toISOString()
+            };
+
+            renderTrip(currentTrip);
+        }
+
+        function renderTrip(trip) {
+            const count = Number(trip.travelers) >= 5 ? 5 : Number(trip.travelers || 1);
+            const perPerson = Number(trip.budget || 0) / count;
+
+            const daysHTML = (trip.itinerary || []).map(day => `
+                <article class="day-card">
+                    <img src="${safe(day.image || trip.image || fallback)}"
+                         alt="${safe(day.title)}" loading="lazy"
+                         onerror="this.onerror=null;this.src='${fallback}'">
+                    <div class="day-content">
+                        <div class="day-label">DÍA ${safe(day.day)} · ${safe(prettyDate(day.date))}</div>
+                        <h3>${safe(day.title)}</h3>
+                        <p>${safe(day.description)}</p>
+                        <div class="day-meta">
+                            <span>◷ ${safe(day.time || "Por definir")}</span>
+                            <span>${safe(day.cost || "Consultar costo")}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join("");
+
+            $("tripDetails").innerHTML = `
+                <div class="result-hero">
+                    <img src="${safe(trip.image || fallback)}"
+                         alt="Paisaje de ${safe(trip.destinationName || trip.destination)}"
+                         onerror="this.onerror=null;this.src='${fallback}'">
+                    <div class="eyebrow">Tu escapada personalizada</div>
+                    <h2>${safe(trip.destinationName || trip.destination)}</h2>
+                    <p>${safe(prettyDate(trip.startDate))} — ${safe(prettyDate(trip.endDate))}</p>
+                    <p>${safe(trip.styleName || styleNames[trip.style] || "Por elegir")} · ${safe(peopleText(trip.travelers))} · ${safe(trip.days)} días</p>
+                </div>
+                <div class="eyebrow">Tu plan día a día</div>
+                <div class="day-list">${daysHTML}</div>
+                <div class="budget-card">
+                    <p>Tu presupuesto total</p>
+                    <strong>${money(trip.budget)}</strong>
+                    <p>Aproximadamente ${money(perPerson)} por persona. Es tu límite de presupuesto, no una cotización confirmada.</p>
+                    <p>Confirma tarifas, transporte, alojamiento y horarios con los proveedores. Este plan no realiza reservas.</p>
+                </div>
+            `;
+
+            form.hidden = true;
+            $("tripResult").hidden = false;
+            $("saveMessage").textContent = "";
+            $("saveTripButton").textContent = "Guardar viaje ♡";
+            updatePreview();
+            $("tripResult").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function getSessionEmail() {
+            try {
+                const session = JSON.parse(localStorage.getItem("getaway_demo_session") || "null");
+                return String(session?.email || session?.correo ||
+                    session?.user?.email || session?.user?.correo || "")
+                    .trim().toLowerCase();
+            } catch {
+                return "";
+            }
+        }
+
+        function readTrips() {
+            try {
+                const email = getSessionEmail();
+                const key = email ? "getaway_demo_trips_" + email : "getaway_trips";
+                const trips = JSON.parse(localStorage.getItem(key) || "[]");
+                return Array.isArray(trips) ? trips : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveCurrentTrip() {
+            if (!currentTrip) return;
+
+            try {
+                const email = getSessionEmail();
+                const key = email ? "getaway_demo_trips_" + email : "getaway_trips";
+                const trips = readTrips();
+                const index = trips.findIndex(item =>
+                    String(item.id) === String(currentTrip.id)
+                );
+
+                if (index >= 0) trips[index] = currentTrip;
+                else trips.unshift(currentTrip);
+
+                localStorage.setItem(key, JSON.stringify(trips));
+                localStorage.setItem("getaway_last_trip", JSON.stringify(currentTrip));
+
+                $("saveMessage").textContent =
+                    "¡Tu aventura quedó guardada! Puedes verla en Mis viajes.";
+                $("saveTripButton").textContent = "Guardado ✓";
+            } catch {
+                $("saveMessage").textContent =
+                    "No se pudo guardar el viaje. Inténtalo de nuevo en este navegador.";
+            }
+        }
+
+        function loadTrip(trip) {
+            editingId = trip.id;
+            $("destination").value = trip.destination || "";
+            $("startDate").value = trip.startDate || "";
+            $("endDate").value = trip.endDate || "";
+            $("travelStyle").value = trip.style || "playa";
+            $("travelers").value = trip.travelers || "1";
+            $("budget").value = trip.budget || "";
+
+            document.querySelectorAll(".style-option").forEach(button => {
+                button.classList.toggle(
+                    "selected",
+                    button.dataset.style === $("travelStyle").value
+                );
+            });
+
+            updatePreview();
+            showStep(1);
+        }
+
+        document.querySelectorAll(".style-option").forEach(button => {
+            button.addEventListener("click", () => {
+                $("travelStyle").value = button.dataset.style;
+
+                document.querySelectorAll(".style-option").forEach(item => {
+                    item.classList.toggle("selected", item === button);
+                });
+
+                updatePreview();
+            });
+        });
+
+        $("next1").addEventListener("click", () => {
+            if (validateDates()) showStep(2);
+        });
+
+        $("next2").addEventListener("click", () => showStep(3));
+        $("back2").addEventListener("click", () => showStep(1));
+        $("back3").addEventListener("click", () => showStep(2));
+
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+
+            if (!validateDates()) return;
+            if (!$("budget").reportValidity()) return;
+
+            if (Number($("budget").value) <= 0) {
+                alert("Escribe un presupuesto mayor que cero.");
+                showStep(3);
+                return;
+            }
+
+            buildTrip();
+        });
+
+        $("saveTripButton").addEventListener("click", saveCurrentTrip);
+
+        $("editTripButton").addEventListener("click", () => {
+            if (currentTrip) loadTrip(currentTrip);
+        });
+
+        ["destination", "startDate", "endDate", "travelers", "budget"].forEach(id => {
+            $(id).addEventListener("input", updatePreview);
+            $(id).addEventListener("change", updatePreview);
+        });
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const today = now.toISOString().slice(0, 10);
+
+        $("startDate").min = today;
+        $("endDate").min = today;
+
+        $("startDate").addEventListener("change", () => {
+            $("endDate").min = $("startDate").value || today;
+
+            if ($("endDate").value && $("endDate").value < $("startDate").value) {
+                $("endDate").value = $("startDate").value;
+            }
+
+            updatePreview();
+        });
+
+        try {
+            const destination = sessionStorage.getItem("getaway_destination");
+            if (destination) {
+                $("destination").value = destination;
+                sessionStorage.removeItem("getaway_destination");
+            }
+
+            const style = sessionStorage.getItem("getaway_style");
+            if (style && styleNames[style]) {
+                $("travelStyle").value = style;
+
+                document.querySelectorAll(".style-option").forEach(button => {
+                    button.classList.toggle("selected", button.dataset.style === style);
+                });
+
+                sessionStorage.removeItem("getaway_style");
+            }
+        } catch {
+            console.warn("No se pudieron cargar las preferencias guardadas.");
+        }
+
+        const viewId = new URLSearchParams(window.location.search).get("ver");
+
+        if (viewId) {
+            const trip = readTrips().find(item =>
+                String(item.id) === String(viewId)
+            );
+
+            if (trip && Array.isArray(trip.itinerary)) {
+                currentTrip = trip;
+                loadTrip(trip);
+                renderTrip(trip);
+            }
+        }
+
+        updatePreview();
+
+        if (!viewId || !currentTrip) showStep(1);
+    });
+})();
+</script>
+</body>
+</html>

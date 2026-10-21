@@ -1,0 +1,1117 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff8f5">
+    <meta name="description" content="Explora destinos nacionales e internacionales y prepara tu próxima aventura con Get Away.">
+    <title>Explorar destinos | Get Away</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        :root {
+            --cream: #fff8f5;
+            --white: #fff;
+            --terracotta: #bd5735;
+            --terracotta-dark: #984329;
+            --pink: #f4ded8;
+            --text: #543b35;
+            --muted: #887773;
+            --border: #f0dfd8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: var(--cream);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible, a:focus-visible, input:focus-visible {
+            outline: 3px solid #d99178;
+            outline-offset: 3px;
+        }
+
+        .topbar {
+            min-height: 78px;
+            padding: 14px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            background: rgba(255,255,255,.93);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            color: var(--terracotta);
+            font: 700 27px 'Playfair Display', serif;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--terracotta);
+        }
+
+        .nav-links .profile-link {
+            padding: 10px 16px;
+            border-radius: 25px;
+            background: var(--pink);
+            color: var(--terracotta-dark);
+        }
+
+        .page {
+            width: min(1250px, 100%);
+            margin: auto;
+            padding: 48px 30px 75px;
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: var(--terracotta);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .intro {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: end;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(36px, 5vw, 57px);
+            font-weight: 600;
+            line-height: 1.12;
+        }
+
+        h1 span {
+            color: var(--terracotta);
+            font-style: italic;
+        }
+
+        .intro-description {
+            max-width: 630px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .count {
+            padding-bottom: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .featured-banner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 300px;
+            margin-bottom: 28px;
+            overflow: hidden;
+            border-radius: 24px;
+            background: #f1ddd5;
+        }
+
+        .featured-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: clamp(24px, 4vw, 43px);
+        }
+
+        .featured-copy h2 {
+            margin: 0 0 12px;
+            font-size: clamp(27px, 3vw, 39px);
+            line-height: 1.2;
+        }
+
+        .featured-copy p {
+            max-width: 430px;
+            color: #785b52;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .featured-image {
+            min-height: 300px;
+        }
+
+        .featured-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            object-fit: cover;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 43px;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 12px;
+            background: var(--terracotta);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            transition: background .2s, transform .2s;
+        }
+
+        .primary-btn:hover {
+            background: var(--terracotta-dark);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 10px 18px;
+            margin: 24px 0 17px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 8px 25px rgba(95,52,39,.04);
+        }
+
+        .search-icon {
+            color: var(--terracotta);
+            font-size: 23px;
+        }
+
+        .search-box input {
+            width: 100%;
+            min-width: 0;
+            padding: 9px 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .search-box input::placeholder {
+            color: #b1a19c;
+        }
+
+        .filters {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin: 0 0 30px;
+        }
+
+        .filter {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: white;
+            color: var(--muted);
+            font-size: 11px;
+            transition: .2s;
+        }
+
+        .filter:hover, .filter.active {
+            border-color: var(--terracotta);
+            background: var(--terracotta);
+            color: white;
+        }
+
+        .results-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .results-heading h2 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .results-heading p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 23px;
+        }
+
+        .destination-card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 21px;
+            background: white;
+            box-shadow: 0 8px 26px rgba(88,47,34,.045);
+            animation: appear .3s ease both;
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 35px rgba(88,47,34,.12);
+        }
+
+        .destination-image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: var(--pink);
+        }
+
+        .destination-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+
+        .destination-card:hover .destination-image img {
+            transform: scale(1.06);
+        }
+
+        .tag {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: rgba(255,248,245,.95);
+            color: var(--terracotta-dark);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .destination-content {
+            padding: 19px;
+        }
+
+        .location {
+            margin-bottom: 7px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .destination-content h3 {
+            margin: 0 0 9px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .description {
+            min-height: 65px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .experience-label {
+            margin-top: 13px;
+            color: var(--terracotta-dark);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 17px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .budget-label {
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .budget {
+            color: var(--terracotta-dark);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .details-btn {
+            flex-shrink: 0;
+            padding: 11px 13px;
+            border: 0;
+            border-radius: 11px;
+            background: var(--terracotta);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .details-btn:hover {
+            background: var(--terracotta-dark);
+        }
+
+        .empty {
+            display: none;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: white;
+        }
+
+        .empty img {
+            width: 100%;
+            max-width: 280px;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .empty h3 {
+            margin: 16px 0 8px;
+            font-size: 24px;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .travel-note {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 16px;
+            background: #f6e7e1;
+            color: #79574c;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .travel-note strong {
+            color: var(--terracotta-dark);
+        }
+
+        footer {
+            padding: 25px 18px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
+            .destination-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .topbar {
+                padding-inline: 4%;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .featured-banner {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                position: relative;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
+                padding: 15px 18px;
+            }
+
+            .brand {
+                font-size: 25px;
+            }
+
+            .nav-links {
+                width: 100%;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 19px;
+                padding: 2px 0 7px;
+                white-space: nowrap;
+            }
+
+            .page {
+                padding: 30px 16px 100px;
+            }
+
+            .intro {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: clamp(35px, 10vw, 48px);
+            }
+
+            .count {
+                padding: 0;
+            }
+
+            .featured-banner {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-copy {
+                order: 1;
+                padding: 23px;
+            }
+
+            .featured-image {
+                order: 0;
+                min-height: 210px;
+                max-height: 240px;
+            }
+
+            .featured-image img {
+                min-height: 210px;
+                max-height: 240px;
+            }
+
+            .destination-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .destination-image {
+                height: 235px;
+            }
+
+            .description {
+                min-height: 0;
+            }
+
+            .results-heading h2 {
+                font-size: 24px;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                z-index: 1000;
+                right: 10px;
+                bottom: 10px;
+                left: 10px;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px 3px;
+                border: 1px solid rgba(189,87,53,.15);
+                border-radius: 19px;
+                background: rgba(255,248,245,.96);
+                box-shadow: 0 8px 30px rgba(65,42,32,.15);
+                backdrop-filter: blur(15px);
+            }
+
+            .mobile-nav a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+                min-width: 45px;
+                color: #704d43;
+                font-size: 18px;
+            }
+
+            .mobile-nav small {
+                font-size: 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <a class="brand" href="app.html">
+        <img src="logo.svg" alt="Logo Get Away">
+        <span>Get Away</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Navegación principal">
+        <a href="app.html">Inicio</a>
+        <a href="explorar.html" class="active">Explorar</a>
+        <a href="crear-viaje.html">Crear viaje</a>
+        <a href="viajes.html">Mis viajes</a>
+        <a href="perfil.html" class="profile-link">Mi perfil</a>
+    </nav>
+</header>
+
+<main class="page">
+    <section class="intro">
+        <div>
+            <p class="eyebrow">Tu próxima historia comienza aquí</p>
+            <h1>El mundo está lleno<br>de lugares <span>por descubrir.</span></h1>
+            <p class="intro-description">
+                Descubre destinos de Colombia y del mundo. Explora sus culturas,
+                encuentra experiencias inolvidables y empieza a imaginar tu
+                próximo viaje según tus gustos y tu presupuesto.
+            </p>
+        </div>
+
+        <div class="count" id="destinationCount" aria-live="polite"></div>
+    </section>
+
+    <section class="featured-banner">
+        <div class="featured-copy">
+            <p class="eyebrow">DESTINO PARA SOÑAR</p>
+            <h2>¿Y si tu próxima historia comienza en Japón?</h2>
+            <p>
+                Descubre templos históricos, calles tradicionales, jardines,
+                casas de té y sabores que te acercan a la cultura japonesa.
+            </p>
+            <button class="primary-btn" type="button" data-destination="Kioto, Japón">
+                Explorar Kioto ↗
+            </button>
+        </div>
+
+        <div class="featured-image">
+            <img
+                src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=85"
+                alt="Calles tradicionales de Kioto, Japón"
+                fetchpriority="high">
+        </div>
+    </section>
+
+    <label class="search-box">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+            type="search"
+            id="searchInput"
+            placeholder="Busca un país, ciudad, cultura o experiencia..."
+            aria-label="Buscar destinos">
+    </label>
+
+    <div class="filters" aria-label="Filtrar destinos">
+        <button class="filter active" type="button" data-filter="todos">Todos</button>
+        <button class="filter" type="button" data-filter="nacional">Colombia</button>
+        <button class="filter" type="button" data-filter="internacional">Internacionales</button>
+        <button class="filter" type="button" data-filter="playa">Sol y playa</button>
+        <button class="filter" type="button" data-filter="aventura">Aventura</button>
+        <button class="filter" type="button" data-filter="cultura">Cultura</button>
+        <button class="filter" type="button" data-filter="naturaleza">Naturaleza</button>
+        <button class="filter" type="button" data-filter="gastronomia">Gastronomía</button>
+    </div>
+
+    <section>
+        <div class="results-heading">
+            <div>
+                <h2>Encuentra tu próximo destino</h2>
+                <p>Elige un lugar y comienza a diseñar tu experiencia.</p>
+            </div>
+        </div>
+
+        <section class="destination-grid" id="destinationGrid"
+                 aria-label="Destinos disponibles"></section>
+
+        <div class="empty" id="emptyMessage" role="status">
+            <img
+                src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80"
+                alt="Pasaporte y artículos para preparar un viaje"
+                loading="lazy">
+            <h3>Aún no encontramos ese lugar...</h3>
+            <p>Prueba con otro nombre o selecciona una categoría diferente.</p>
+            <button class="primary-btn" type="button" id="resetSearch">
+                Ver todos los destinos
+            </button>
+        </div>
+    </section>
+
+    <aside class="travel-note">
+        <div aria-hidden="true">✦</div>
+        <p>
+            <strong>Viaja con información clara.</strong>
+            Los presupuestos que aparecen son referencias generales para
+            organizar tu idea de viaje, no cotizaciones confirmadas. Los
+            vuelos, alojamientos, entradas, temporadas y gastos personales
+            pueden cambiar el total. Antes de reservar, verifica los precios
+            y requisitos de entrada de cada país.
+        </p>
+    </aside>
+</main>
+
+<footer>
+    Get Away · Viaja a tu manera, crea recuerdos para siempre.
+</footer>
+
+<nav class="mobile-nav" aria-label="Navegación móvil">
+    <a href="app.html">⌂<small>Inicio</small></a>
+    <a href="explorar.html">✧<small>Explorar</small></a>
+    <a href="crear-viaje.html">＋<small>Planear</small></a>
+    <a href="viajes.html">♡<small>Viajes</small></a>
+    <a href="perfil.html">♙<small>Perfil</small></a>
+</nav>
+
+<script>
+"use strict";
+
+const destinos = [
+    {
+        nombre: "Cartagena",
+        pais: "Colombia",
+        ubicacion: "Bolívar, Colombia",
+        tipo: "nacional",
+        categorias: ["playa", "cultura", "gastronomia"],
+        etiqueta: "Encanto caribeño",
+        presupuesto: "Desde $350.000 COP",
+        duracion: "2–3 días",
+        descripcion: "Recorre la Ciudad Amurallada, descubre sus plazas coloniales, disfruta la brisa del Caribe y prueba platos tradicionales de la costa.",
+        experiencia: "Historia, playas y sabores del Caribe",
+        imagen: "https://images.unsplash.com/photo-1583997052103-b4a1cb974ce3?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Santa Marta",
+        pais: "Colombia",
+        ubicacion: "Magdalena, Colombia",
+        tipo: "nacional",
+        categorias: ["playa", "naturaleza", "aventura"],
+        etiqueta: "Mar y montaña",
+        presupuesto: "Desde $280.000 COP",
+        duracion: "2–4 días",
+        descripcion: "Combina playas caribeñas, paseos por el centro histórico y excursiones por los paisajes naturales de la Sierra Nevada.",
+        experiencia: "Naturaleza, mar y caminatas",
+        imagen: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Medellín",
+        pais: "Colombia",
+        ubicacion: "Antioquia, Colombia",
+        tipo: "nacional",
+        categorias: ["cultura", "gastronomia"],
+        etiqueta: "Ciudad vibrante",
+        presupuesto: "Desde $420.000 COP",
+        duracion: "3–4 días",
+        descripcion: "Explora el arte urbano de la Comuna 13, recorre barrios llenos de vida y conoce la cultura paisa a través de su gastronomía.",
+        experiencia: "Arte urbano, cafés y cocina paisa",
+        imagen: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "San Andrés",
+        pais: "Colombia",
+        ubicacion: "Caribe colombiano",
+        tipo: "nacional",
+        categorias: ["playa", "naturaleza"],
+        etiqueta: "Aguas turquesas",
+        presupuesto: "Desde $650.000 COP",
+        duracion: "3–5 días",
+        descripcion: "Disfruta el mar de siete colores, explora sus playas y conoce la cultura isleña y sus sabores caribeños.",
+        experiencia: "Playas, snorkel y cultura isleña",
+        imagen: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Eje Cafetero",
+        pais: "Colombia",
+        ubicacion: "Quindío, Risaralda y Caldas",
+        tipo: "nacional",
+        categorias: ["naturaleza", "aventura", "gastronomia"],
+        etiqueta: "Entre montañas",
+        presupuesto: "Desde $390.000 COP",
+        duracion: "3–5 días",
+        descripcion: "Visita fincas cafeteras, aprende cómo se cultiva el café colombiano y descubre pueblos rodeados de montañas verdes.",
+        experiencia: "Café, pueblos y paisajes naturales",
+        imagen: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Guatapé",
+        pais: "Colombia",
+        ubicacion: "Antioquia, Colombia",
+        tipo: "nacional",
+        categorias: ["aventura", "naturaleza"],
+        etiqueta: "Escapada colorida",
+        presupuesto: "Desde $310.000 COP",
+        duracion: "1–2 días",
+        descripcion: "Sube la Piedra del Peñol, contempla el embalse y pasea por las fachadas coloridas del pueblo.",
+        experiencia: "Miradores, agua y arquitectura colorida",
+        imagen: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Villa de Leyva",
+        pais: "Colombia",
+        ubicacion: "Boyacá, Colombia",
+        tipo: "nacional",
+        categorias: ["cultura", "naturaleza"],
+        etiqueta: "Historia colonial",
+        presupuesto: "Desde $370.000 COP",
+        duracion: "2–3 días",
+        descripcion: "Recorre una de las plazas coloniales más conocidas del país, visita museos y disfruta un ambiente tranquilo.",
+        experiencia: "Historia, arquitectura y artesanías",
+        imagen: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Parque Tayrona",
+        pais: "Colombia",
+        ubicacion: "Magdalena, Colombia",
+        tipo: "nacional",
+        categorias: ["aventura", "naturaleza", "playa"],
+        etiqueta: "Espíritu aventurero",
+        presupuesto: "Desde $260.000 COP",
+        duracion: "2–3 días",
+        descripcion: "Organiza caminatas por senderos naturales y disfruta paisajes donde la selva se encuentra con el mar Caribe.",
+        experiencia: "Senderismo, playas y biodiversidad",
+        imagen: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Mompox",
+        pais: "Colombia",
+        ubicacion: "Bolívar, Colombia",
+        tipo: "nacional",
+        categorias: ["cultura", "gastronomia"],
+        etiqueta: "Rincón histórico",
+        presupuesto: "Desde $320.000 COP",
+        duracion: "2–3 días",
+        descripcion: "Descubre sus calles históricas, la arquitectura colonial, la tradición artesanal y los paisajes junto al río Magdalena.",
+        experiencia: "Patrimonio, artesanías y río",
+        imagen: "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Kioto, Japón",
+        pais: "Japón",
+        ubicacion: "Kioto, Japón",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia", "naturaleza"],
+        etiqueta: "Tradición japonesa",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–5 días",
+        descripcion: "Conoce templos históricos, pasea por Higashiyama, visita jardines y descubre la cultura del té, el matcha y la cocina tradicional.",
+        experiencia: "Templos, jardines y gastronomía japonesa",
+        imagen: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Tokio, Japón",
+        pais: "Japón",
+        ubicacion: "Tokio, Japón",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia", "aventura"],
+        etiqueta: "Tradición y modernidad",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–6 días",
+        descripcion: "Combina barrios modernos, santuarios, tiendas especializadas, mercados gastronómicos y experiencias de la vida urbana japonesa.",
+        experiencia: "Barrios, tecnología y comida local",
+        imagen: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Santorini, Grecia",
+        pais: "Grecia",
+        ubicacion: "Islas Cícladas, Grecia",
+        tipo: "internacional",
+        categorias: ["playa", "cultura", "gastronomia"],
+        etiqueta: "Isla mediterránea",
+        presupuesto: "Según fechas y estilo",
+        duracion: "3–5 días",
+        descripcion: "Explora los pueblos de Oia y Fira, contempla la caldera volcánica y prueba especialidades locales como los tomatokeftedes.",
+        experiencia: "Paisajes volcánicos y cocina griega",
+        imagen: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Roma, Italia",
+        pais: "Italia",
+        ubicacion: "Lacio, Italia",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia"],
+        etiqueta: "Historia viva",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–5 días",
+        descripcion: "Descubre el Coliseo, el Foro Romano y plazas históricas. Reserva tiempo para probar pasta, pizza y helado artesanal.",
+        experiencia: "Monumentos, arte y cocina italiana",
+        imagen: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "París, Francia",
+        pais: "Francia",
+        ubicacion: "Isla de Francia",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia"],
+        etiqueta: "Arte y romanticismo",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–6 días",
+        descripcion: "Visita museos, pasea por barrios históricos, conoce monumentos emblemáticos y disfruta panaderías y mercados franceses.",
+        experiencia: "Arte, arquitectura y pastelería",
+        imagen: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Ciudad de México",
+        pais: "México",
+        ubicacion: "México",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia"],
+        etiqueta: "Cultura y sabor",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–6 días",
+        descripcion: "Explora el Centro Histórico, conoce museos y mercados y prueba tacos, tamales y otras especialidades de la gastronomía mexicana.",
+        experiencia: "Museos, mercados y comida mexicana",
+        imagen: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Bali, Indonesia",
+        pais: "Indonesia",
+        ubicacion: "Bali, Indonesia",
+        tipo: "internacional",
+        categorias: ["playa", "naturaleza", "cultura"],
+        etiqueta: "Naturaleza tropical",
+        presupuesto: "Según fechas y estilo",
+        duracion: "5–7 días",
+        descripcion: "Descubre templos, arrozales, cascadas y playas. Infórmate sobre las costumbres locales antes de visitar lugares sagrados.",
+        experiencia: "Templos, paisajes y cultura balinesa",
+        imagen: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=85"
+    },
+    {
+        nombre: "Nueva York, Estados Unidos",
+        pais: "Estados Unidos",
+        ubicacion: "Nueva York, EE. UU.",
+        tipo: "internacional",
+        categorias: ["cultura", "gastronomia", "aventura"],
+        etiqueta: "La ciudad que no duerme",
+        presupuesto: "Según fechas y estilo",
+        duracion: "4–6 días",
+        descripcion: "Recorre Central Park, conoce museos, disfruta distintos barrios y prueba propuestas gastronómicas de muchas culturas.",
+        experiencia: "Museos, barrios y diversidad gastronómica",
+        imagen: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&fit=crop&w=900&q=85"
+    }
+];
+
+const grid = document.getElementById("destinationGrid");
+const buscador = document.getElementById("searchInput");
+const contador = document.getElementById("destinationCount");
+const mensajeVacio = document.getElementById("emptyMessage");
+
+let filtroActual = "todos";
+
+function normalizar(texto) {
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function escaparHTML(texto) {
+    return String(texto).replace(/[&<>"']/g, caracter => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[caracter]);
+}
+
+function mostrarDestinos() {
+    const texto = normalizar(buscador.value);
+
+    const resultados = destinos.filter(destino => {
+        const coincideCategoria =
+            filtroActual === "todos" ||
+            destino.tipo === filtroActual ||
+            destino.categorias.includes(filtroActual);
+
+        const contenido = normalizar([
+            destino.nombre,
+            destino.pais,
+            destino.ubicacion,
+            destino.descripcion,
+            destino.etiqueta,
+            destino.experiencia,
+            ...destino.categorias
+        ].join(" "));
+
+        return coincideCategoria && contenido.includes(texto);
+    });
+
+    grid.innerHTML = resultados.map(destino => `
+        <article class="destination-card">
+            <div class="destination-image">
+                <img
+                    src="${escaparHTML(destino.imagen)}"
+                    alt="Paisaje de ${escaparHTML(destino.nombre)}"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=80';">
+                <span class="tag">${escaparHTML(destino.etiqueta)}</span>
+            </div>
+
+            <div class="destination-content">
+                <div class="location">
+                    ${escaparHTML(destino.ubicacion)}
+                </div>
+
+                <h3>${escaparHTML(destino.nombre)}</h3>
+
+                <p class="description">
+                    ${escaparHTML(destino.descripcion)}
+                </p>
+
+                <div class="experience-label">
+                    ${escaparHTML(destino.experiencia)}
+                </div>
+
+                <div class="card-bottom">
+                    <div>
+                        <div class="budget-label">
+                            Duración sugerida: ${escaparHTML(destino.duracion)}
+                        </div>
+                        <div class="budget">
+                            ${escaparHTML(destino.presupuesto)}
+                        </div>
+                    </div>
+
+                    <button
+                        class="details-btn"
+                        type="button"
+                        data-destination="${escaparHTML(destino.nombre)}">
+                        Planear ↗
+                    </button>
+                </div>
+            </div>
+        </article>
+    `).join("");
+
+    contador.textContent =
+        `${resultados.length} ${resultados.length === 1 ? "destino" : "destinos"} encontrados`;
+
+    mensajeVacio.style.display = resultados.length ? "none" : "block";
+    grid.style.display = resultados.length ? "grid" : "none";
+}
+
+document.querySelectorAll(".filter").forEach(boton => {
+    boton.addEventListener("click", () => {
+        document.querySelector(".filter.active")?.classList.remove("active");
+        boton.classList.add("active");
+        filtroActual = boton.dataset.filter;
+        mostrarDestinos();
+    });
+});
+
+buscador.addEventListener("input", mostrarDestinos);
+
+document.getElementById("resetSearch").addEventListener("click", () => {
+    buscador.value = "";
+    filtroActual = "todos";
+    document.querySelector(".filter.active")?.classList.remove("active");
+    document.querySelector('[data-filter="todos"]')?.classList.add("active");
+    mostrarDestinos();
+});
+
+function seleccionarDestino(nombre) {
+    try {
+        sessionStorage.setItem("getaway_destination", nombre);
+    } catch (error) {
+        alert("No pudimos guardar el destino en esta sesión. Intenta nuevamente.");
+        return;
+    }
+
+    window.location.href = "crear-viaje.html";
+}
+
+grid.addEventListener("click", evento => {
+    const boton = evento.target.closest("[data-destination]");
+    if (!boton) return;
+    seleccionarDestino(boton.dataset.destination);
+});
+
+document.querySelectorAll('[data-destination]:not(#destinationGrid [data-destination])')
+    .forEach(boton => {
+        boton.addEventListener("click", () => {
+            seleccionarDestino(boton.dataset.destination);
+        });
+    });
+
+mostrarDestinos();
+</script>
+</body>
+</html>

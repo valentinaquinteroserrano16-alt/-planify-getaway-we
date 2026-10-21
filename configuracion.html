@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configuración | Get Away</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-body">
+<header class="dash-top">
+    <a class="brand" href="app.html"><img class="logo-icon" src="logo.svg" alt="">Get Away</a>
+    <a class="text-link" href="perfil.html">Mi perfil</a>
+</header>
+<div class="dashboard-shell">
+    <aside class="sidebar">
+        <a class="side-link" href="app.html">⌂ <span>Inicio</span></a>
+        <a class="side-link" href="viajes.html">♡ <span>Mis viajes</span></a>
+        <a class="side-link" href="explorar.html">✧ <span>Explorar destinos</span></a>
+        <a class="side-link" href="perfil.html">♙ <span>Mi perfil</span></a>
+        <a class="side-link active" href="configuracion.html">⚙ <span>Configuración</span></a>
+    </aside>
+    <main class="dash-main">
+        <p class="eyebrow">A TU MANERA</p>
+        <h1>Mis <span class="accent-text">preferencias.</span></h1>
+        <p class="muted">Personaliza tus preferencias de viaje.</p>
+        <section class="planner-panel">
+            <form id="settingsForm" class="simple-form">
+                <label>Moneda para mostrar presupuestos
+                    <select id="preferredCurrency">
+                        <option value="COP">Peso colombiano (COP)</option>
+                        <option value="USD">Dólar estadounidense (USD)</option>
+                    </select>
+                </label>
+                <label>Estilo de viaje favorito
+                    <select id="preferredStyle">
+                        <option value="playa">Playa y descanso</option>
+                        <option value="aventura">Aventura y naturaleza</option>
+                        <option value="cultura">Cultura e historia</option>
+                        <option value="gastronomia">Gastronomía</option>
+                        <option value="ciudad">Vida urbana</option>
+                        <option value="romantico">Escapada romántica</option>
+                    </select>
+                </label>
+                <button class="button" type="submit">Guardar preferencias</button>
+                <p id="settingsMessage" class="form-message" aria-live="polite"></p>
+            </form>
+        </section>
+        <section class="planner-panel">
+            <h2>Tu cuenta</h2>
+            <p>Para actualizar tu nombre, entra en tu perfil.</p>
+            <a href="perfil.html" class="text-link">Ir a mi perfil ↗</a>
+        </section>
+    </main>
+</div>
+<nav class="mobile-nav">
+    <a href="app.html">⌂<small>Inicio</small></a>
+    <a href="viajes.html">♡<small>Viajes</small></a>
+    <a href="crear-viaje.html">✧<small>Planear</small></a>
+    <a href="perfil.html">♙<small>Perfil</small></a>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>
