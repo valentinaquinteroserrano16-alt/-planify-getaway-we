@@ -1,162 +1,119 @@
-/* =========================================================
-   GET AWAY — app.js
-   Funciones compartidas:
-   cuentas, sesiones, perfiles, itinerarios y viajes.
-========================================================= */
+const $ = (selector) => document.querySelector(selector);
 
-"use strict";
+/* -------------------- ALMACENAMIENTO -------------------- */
 
-const $ = (selector, root = document) =>
-    root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-    [...root.querySelectorAll(selector)];
-
-const byId = id => document.getElementById(id);
-
-const STORAGE = {
-    users: "getaway_demo_users",
-    session: "getaway_demo_session",
-    sessionBackup: "getaway_demo_session_backup",
-    legacyTrips: "getaway_trips",
-    lastTrip: "getaway_last_trip",
-    selectedTripPrefix: "getaway_selected_trip_",
-    preferences: "getaway_preferences"
-};
-
-/* ===================== ALMACENAMIENTO ===================== */
-
-function getData(key, fallback = null) {
+const getData = (key, fallback = []) => {
     try {
         const value = localStorage.getItem(key);
         return value === null ? fallback : JSON.parse(value);
     } catch (error) {
-        console.warn(`No se pudo leer ${key}`, error);
+        console.error("No se pudo leer el almacenamiento:", key, error);
         return fallback;
     }
-}
+};
 
-function setData(key, value) {
+const setData = (key, value) => {
     try {
         localStorage.setItem(key, JSON.stringify(value));
-        return true;
     } catch (error) {
-        console.error(`No se pudo guardar ${key}`, error);
-        return false;
+        console.error("No se pudo guardar la información:", error);
+        alert("No se pudo guardar. Comprueba el almacenamiento del navegador.");
     }
-}
-
-/* ===================== SESIÓN Y USUARIO ===================== */
+};
 
 function getSession() {
-    return getData(STORAGE.session, null) ||
-           getData(STORAGE.sessionBackup, null);
-}
-
-function setSession(session) {
-    setData(STORAGE.session, session);
-    setData(STORAGE.sessionBackup, session);
-}
-
-function getUserEmail() {
-    const session = getSession();
-
-    return String(
-        session?.email ||
-        session?.user?.email ||
-        "invitada@getaway.local"
-    ).trim().toLowerCase();
+    return getData("getaway_demo_session", null);
 }
 
 function getUserName() {
     const session = getSession();
 
-    return String(
+    return (
         session?.name ||
-        session?.user?.name ||
         session?.nombre ||
-        session?.user?.displayName ||
+        session?.user?.name ||
+        session?.user?.nombre ||
+        session?.email?.split("@")[0] ||
         "Viajera"
-    ).trim();
+    );
 }
 
-function isGuest() {
-    return !getSession() ||
-           getUserEmail() === "invitada@getaway.local";
+function getUserEmail() {
+    const session = getSession();
+
+    return (
+        session?.email ||
+        session?.user?.email ||
+        "invitada@getaway.local"
+    ).toLowerCase();
 }
 
 function tripsKey() {
-    return `getaway_demo_trips_${getUserEmail()}`;
+    return "getaway_demo_trips_" + getUserEmail();
 }
 
-/* ===================== FOTOS DE DESTINOS ===================== */
-
-const destinationImages = {
-    "cartagena":
-        "https://images.unsplash.com/photo-1583997052103-b4a1cb974ce3?auto=format&fit=crop&w=1200&q=85",
-
-    "santa marta":
-        "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=85",
-
-    "medellín":
-        "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=85",
-
-    "medellin":
-        "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1200&q=85",
-
-    "san andrés":
-        "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=85",
-
-    "san andres":
-        "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=85",
-
-    "eje cafetero":
-        "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=85",
-
-    "guatapé":
-        "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=85",
-
-    "guatape":
-        "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=85",
-
-    "villa de leyva":
-        "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=85",
-
-    "tayrona":
-        "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1200&q=85",
-
-    "mompox":
-        "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85",
-
-    "bogotá":
-        "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=1200&q=85",
-
-    "bogota":
-        "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=1200&q=85",
-
-    "barranquilla":
-        "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=85"
-};
-
-function getDestinationImage(destination) {
-    const key = String(destination || "")
-        .trim()
-        .toLowerCase();
-
-    return destinationImages[key] ||
-        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85";
+function getTrips() {
+    const savedTrips = getData(tripsKey(), null);
+    if (Array.isArray(savedTrips)) {
+        return savedTrips;
+    }
+    const legacyTrips = getData("getaway_trips", []);
+    if (Array.isArray(legacyTrips) && legacyTrips.length > 0) {
+        saveTrips(legacyTrips);
+        return legacyTrips;
+    }
+    return [];
 }
 
-/* ===================== UTILIDADES ===================== */
+function saveTrips(trips) {
+    setData(tripsKey(), trips);
+}
 
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
+/* -------------------- SISTEMA DE FAVORITOS (LOCALSTORAGE) -------------------- */
+
+function favoritesKey() {
+    return "planify_favoritos_" + getUserEmail();
+}
+
+function getFavorites() {
+    const favs = getData(favoritesKey(), []);
+    return Array.isArray(favs) ? favs : [];
+}
+
+function toggleFavorite(destinoObj) {
+    const favorites = getFavorites();
+    const index = favorites.findIndex(
+        item => item.nombre.toLowerCase() === destinoObj.nombre.toLowerCase()
+    );
+
+    if (index !== -1) {
+        favorites.splice(index, 1);
+        setData(favoritesKey(), favorites);
+        return false; // Eliminado
+    } else {
+        favorites.push(destinoObj);
+        setData(favoritesKey(), favorites);
+        return true; // Agregado
+    }
+}
+
+function isFavorite(nombreDestino) {
+    return getFavorites().some(
+        item => item.nombre.toLowerCase() === nombreDestino.toLowerCase()
+    );
+}
+
+/* -------------------- UTILIDADES -------------------- */
+
+function escapeHTML(value = "") {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp",
+        "<": "&lt",
+        ">": "&gt",
         '"': "&quot;",
         "'": "&#39;"
-    })[character]);
+})[char]);
+    
 }
 
 function money(value) {
@@ -169,1219 +126,706 @@ function money(value) {
 
 function formatDate(value) {
     if (!value) return "Fecha por definir";
-
-    const date = new Date(`${value}T12:00:00`);
-
+    const date = new Date(value + "T12:00:00");
     if (Number.isNaN(date.getTime())) {
         return "Fecha por definir";
     }
-
-    return new Intl.DateTimeFormat("es-CO", {
+    return date.toLocaleDateString("es-CO", {
         day: "numeric",
         month: "short",
         year: "numeric"
-    }).format(date);
+    });
 }
 
-function calculateDays(startDate, endDate) {
-    if (!startDate || !endDate) return 1;
-
-    const start = new Date(`${startDate}T12:00:00`);
-    const end = new Date(`${endDate}T12:00:00`);
-
-    if (
-        Number.isNaN(start.getTime()) ||
-        Number.isNaN(end.getTime())
-    ) {
+function calculateDays(start, end) {
+    if (!start || !end) return 1;
+    const startDate = new Date(start + "T12:00:00");
+    const endDate = new Date(end + "T12:00:00");
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
         return 1;
     }
-
-    return Math.max(
-        1,
-        Math.round((end - start) / 86400000) + 1
-    );
+    const difference = Math.round((endDate - startDate) / 86400000);
+    return Math.max(1, difference + 1);
 }
 
-const styleNames = {
-    playa: "Sol y playa",
-    aventura: "Aventura",
-    cultura: "Cultura",
-    gastronomia: "Gastronomía",
-    ciudad: "Explorar la ciudad",
-    romantico: "Escapada romántica",
-    naturaleza: "Naturaleza",
-    descanso: "Descanso"
+/* =========================================================
+   APIs PÚBLICAS DE PLANIFY
+   1. REST Countries API (Información de países)
+   2. Nominatim OpenStreetMap API (Geocodificación)
+   3. Open-Meteo API (Clima actual y pronóstico)
+   ========================================================= */
+
+// API 1: REST Countries
+async function consultarPaisesAPI() {
+    try {
+        const res = await fetch(
+            "https://restcountries.com/v3.1/all?fields=name,translations,capital,region,subregion,population,flags,languages,currencies,latlng"
+        );
+        if (!res.ok) throw new Error("Error HTTP REST Countries: " + res.status);
+        return await res.json();
+    } catch (error) {
+        console.error("Fallo al consultar REST Countries API:", error);
+        return [];
+    }
+}
+
+// API 2: Nominatim / OpenStreetMap (Geocodificación dinámica)
+async function obtenerCoordenadasCiudad(lugar) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(lugar)}`;
+        const res = await fetch(url, {
+            headers: { "Accept-Language": "es" }
+        });
+        if (!res.ok) throw new Error("Error HTTP Nominatim: " + res.status);
+        const datos = await res.json();
+
+        if (Array.isArray(datos) && datos.length > 0) {
+            return {
+                lat: parseFloat(datos[0].lat),
+                lon: parseFloat(datos[0].lon),
+                nombreCompleto: datos[0].display_name
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error("Fallo al consultar Nominatim API:", error);
+        return null;
+    }
+}
+
+// API 3: Open-Meteo (Clima actual y pronóstico de 3 días)
+async function consultarClimaAPI(lat, lon) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}¤t_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=4`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Error HTTP Open-Meteo: " + res.status);
+        return await res.json();
+    } catch (error) {
+        console.error("Fallo al consultar Open-Meteo API:", error);
+        return null;
+    }
+}
+
+function interpretarCodigoClima(code) {
+    if (code === 0) return "Despejado ☀";
+    if (code <= 3) return "Parcialmente nublado ⛅";
+    if (code <= 48) return "Neblina 🌫";
+    if (code <= 67) return "Lluvia 🌧";
+    if (code <= 77) return "Nieve ❄";
+    if (code <= 82) return "Chubascos 🌦";
+    return "Tormenta ⛈";
+}
+
+/* -------------------- MAPAS INTERACTIVOS (LEAFLET + OSM) -------------------- */
+
+const coordenadasDestinos = {
+    "cartagena": [10.391, -75.479],
+    "santa marta": [11.240, -74.211],
+    "medellin": [6.2442, -75.5812],
+    "medellín": [6.2442, -75.5812],
+    "bogota": [4.7110, -74.0721],
+    "bogotá": [4.7110, -74.0721],
+    "san andres": [12.5847, -81.7006],
+    "san andrés": [12.5847, -81.7006],
+    "guatape": [6.2355, -75.1583],
+    "guatapé": [6.2355, -75.1583]
 };
-/* ===================== NORMALIZAR VIAJES ===================== */
 
-function normalizeTrip(trip = {}) {
-    const destination = String(
-        trip.destination || trip.destino || "Mi escapada"
-    ).trim();
+let mapaInstancia = null;
 
-    const style = String(
-        trip.travelStyle || trip.style || trip.estilo || "aventura"
-    ).toLowerCase();
+async function inicializarMapaYClima(nombreDestino) {
+    const contenedorMapa = document.getElementById("mapa-destino");
+    const contenedorClima = document.getElementById("clima-destino");
 
-    const startDate = trip.startDate || trip.fechaInicio || "";
-    const endDate = trip.endDate || trip.fechaFin || "";
+    // 1. Buscar coordenadas reales mediante Nominatim API (con respaldo local)
+    let coords = null;
+    const geo = await obtenerCoordenadasCiudad(nombreDestino);
 
-    const travelers = Math.max(
-        1,
-        Number(trip.travelers || trip.personas || 1)
-    );
-
-    return {
-        ...trip,
-        id: String(
-            trip.id ||
-            `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-        ),
-        destination,
-        startDate,
-        endDate,
-        travelStyle: style,
-        style,
-        styleName: trip.styleName || styleNames[style] || "A tu manera",
-        travelers,
-        travelersLabel: `${travelers} ${
-            travelers === 1 ? "viajero" : "viajeros"
-        }`,
-        budget: Math.max(
-            0,
-            Number(trip.budget || trip.presupuesto || 0)
-        ),
-        days: Math.max(
-            1,
-            Number(trip.days || calculateDays(startDate, endDate))
-        ),
-        image: trip.image || trip.imagen || getDestinationImage(destination),
-        createdAt: trip.createdAt || new Date().toISOString()
-    };
-}
-
-/* ===================== LEER Y GUARDAR VIAJES ===================== */
-
-function getTrips() {
-    const currentTrips = getData(tripsKey(), null);
-
-    if (Array.isArray(currentTrips)) {
-        return currentTrips.map(normalizeTrip);
+    if (geo) {
+        coords = [geo.lat, geo.lon];
+    } else {
+        const clave = nombreDestino.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        coords = coordenadasDestinos[clave] || [4.5709, -74.2973];
     }
 
-    // Recupera los viajes creados con la versión anterior.
-    const oldTrips = getData(STORAGE.legacyTrips, []);
+    // 2. Renderizar el mapa con Leaflet si existe el contenedor y la librería L
+    if (contenedorMapa && typeof L !== "undefined") {
+        if (mapaInstancia !== null) {
+            mapaInstancia.remove();
+        }
 
-    if (Array.isArray(oldTrips) && oldTrips.length > 0) {
-        const normalizedTrips = oldTrips.map(normalizeTrip);
+        mapaInstancia = L.map("mapa-destino").setView(coords, 12);
 
-        setData(tripsKey(), normalizedTrips);
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "© OpenStreetMap contributors"
+        }).addTo(mapaInstancia);
 
-        return normalizedTrips;
+        L.marker(coords).addTo(mapaInstancia)
+            .bindPopup(`<b>${escapeHTML(nombreDestino)}</b><br>¡Tu escapada comienza aquí!`)
+            .openPopup();
     }
 
-    return [];
+    // 3. Consultar clima real con Open-Meteo API usando las coordenadas obtenidas
+    if (contenedorClima) {
+        contenedorClima.innerHTML = `<p class="muted">Consultando clima en tiempo real...</p>`;
+        const clima = await consultarClimaAPI(coords[0], coords[1]);
+
+        if (clima && clima.current_weather) {
+            const actual = clima.current_weather;
+            const dias = clima.daily || {};
+            const pronosticoHTML = (dias.time || []).slice(1, 4).map((fecha, idx) => {
+                const max = dias.temperature_2m_max?.[idx + 1] ?? "-";
+                const min = dias.temperature_2m_min?.[idx + 1] ?? "-";
+                const lluvia = dias.precipitation_probability_max?.[idx + 1] ?? 0;
+                return `
+                    <div class="forecast-day" style="padding:10px;border:1px solid #eadbd4;border-radius:12px;background:#fff;">
+                        <strong>${formatDate(fecha)}</strong><br>
+                        <span>Máx: ${max}°C / Mín: ${min}°C</span><br>
+                        <small>Lluvia: ${lluvia}%</small>
+                    </div>
+                `;
+            }).join("");
+
+            contenedorClima.innerHTML = `
+                <div class="weather-box" style="padding:18px;border:1px solid #eadbd4;border-radius:16px;background:#fff8f5;margin:16px 0;">
+                    <span class="eyebrow">CLIMA EN TIEMPO REAL · OPEN-METEO</span>
+                    <h4>${escapeHTML(nombreDestino)}: ${actual.temperature}°C (${interpretarCodigoClima(actual.weathercode)})</h4>
+                    <p style="font-size:0.85rem;margin-bottom:12px;">Viento: ${actual.windspeed} km/h</p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
+                        ${pronosticoHTML}
+                    </div>
+                </div>
+            `;
+        } else {
+            contenedorClima.innerHTML = `<p class="small-note">No se pudo cargar el pronóstico climático para este destino.</p>`;
+        }
+    }
 }
 
-function saveTrips(trips) {
-    const normalizedTrips = (
-        Array.isArray(trips) ? trips : []
-    ).map(normalizeTrip);
-
-    return setData(tripsKey(), normalizedTrips);
-}
-
-/* ===================== ACTIVIDADES POR ESTILO ===================== */
+/* -------------------- IDEAS DE ITINERARIOS -------------------- */
 
 const activities = {
     playa: [
-        ["Mañana", "Desayuno local y paseo por la playa"],
-        ["Tarde", "Almuerzo caribeño y actividad junto al mar"],
-        ["Atardecer", "Fotos, brisa y tiempo para disfrutar el paisaje"],
-        ["Noche", "Cena tranquila y recorrido por el centro"]
+        ["Mañana junto al mar", "Empieza el día con un paseo por la playa y un desayuno tranquilo."],
+        ["Una tarde sin afán", "Busca un lugar frente al mar, disfruta el paisaje y toma fotografías."],
+        ["Atardecer inolvidable", "Termina el día viendo caer el sol y prueba algo típico del destino."]
     ],
-
     aventura: [
-        ["Mañana", "Desayuno temprano y salida a la ruta"],
-        ["Tarde", "Actividad al aire libre y parada panorámica"],
-        ["Atardecer", "Descanso y fotografías del paisaje"],
-        ["Noche", "Cena local y preparación para el siguiente día"]
+        ["Conecta con la naturaleza", "Explora un sendero o un parque natural de la zona."],
+        ["Un plan fuera de la rutina", "Busca una actividad al aire libre adecuada para tu experiencia."],
+        ["Paisajes para recordar", "Visita un mirador y guarda tus mejores fotografías."]
     ],
-
     cultura: [
-        ["Mañana", "Desayuno típico y recorrido por el centro histórico"],
-        ["Tarde", "Visita a un museo, galería o lugar cultural"],
-        ["Atardecer", "Café en un lugar tradicional"],
-        ["Noche", "Prueba un plato representativo del destino"]
+        ["Conoce la historia", "Visita un museo, centro histórico o lugar cultural."],
+        ["Camina sin prisa", "Descubre calles tradicionales, arquitectura y comercios locales."],
+        ["Historias y sabores", "Prueba un plato típico y conoce más sobre sus tradiciones."]
     ],
-
     gastronomia: [
-        ["Mañana", "Desayuno en una cafetería local"],
-        ["Tarde", "Ruta gastronómica y almuerzo regional"],
-        ["Atardecer", "Visita a un mercado o negocio local"],
-        ["Noche", "Cena especial para cerrar el día"]
+        ["Desayuno local", "Busca una cafetería tradicional y prueba una especialidad regional."],
+        ["Ruta de sabores", "Organiza una pequeña ruta por restaurantes y mercados locales."],
+        ["Un sabor para recordar", "Termina el día con un plato representativo del destino."]
     ],
-
     ciudad: [
-        ["Mañana", "Desayuno y recorrido por lugares emblemáticos"],
-        ["Tarde", "Tiendas locales, parques y rincones fotogénicos"],
-        ["Atardecer", "Visita a un mirador o café"],
-        ["Noche", "Plan nocturno según tus gustos"]
+        ["La ciudad despierta", "Empieza por una zona céntrica y sus lugares más conocidos."],
+        ["Entre tiendas y cafés", "Explora barrios interesantes, librerías y espacios creativos."],
+        ["La ciudad de noche", "Elige una zona concurrida y segura para cenar o pasear."]
     ],
-
     romantico: [
-        ["Mañana", "Desayuno relajado en un lugar bonito"],
-        ["Tarde", "Paseo especial y experiencia para compartir"],
-        ["Atardecer", "Contemplar el paisaje y tomar fotografías"],
-        ["Noche", "Cena especial y caminata tranquila"]
-    ],
-
-    naturaleza: [
-        ["Mañana", "Desayuno y caminata para descubrir el entorno"],
-        ["Tarde", "Visita a un parque, sendero o paisaje natural"],
-        ["Atardecer", "Disfruta las vistas y toma fotografías"],
-        ["Noche", "Cena local y descanso"]
-    ],
-
-    descanso: [
-        ["Mañana", "Desayuno relajado y mañana libre"],
-        ["Tarde", "Actividad suave y tiempo para desconectar"],
-        ["Atardecer", "Disfruta la vista sin mirar el reloj"],
-        ["Noche", "Cena tranquila y descanso"]
+        ["Un comienzo especial", "Busca un desayuno bonito y un paseo tranquilo."],
+        ["Un momento para dos", "Planea una actividad compartida o una visita a un lugar especial."],
+        ["Una noche memorable", "Elige una cena acogedora y disfruta el destino sin afanes."]
     ]
 };
 
-/* ===================== GENERAR ITINERARIO ===================== */
+const styleNames = {
+    playa: "Playa y descanso",
+    aventura: "Aventura y naturaleza",
+    cultura: "Cultura e historia",
+    gastronomia: "Gastronomía",
+    ciudad: "Vida urbana",
+    romantico: "Escapada romántica"
+};
 
 function buildItinerary(trip) {
-    const normalizedTrip = normalizeTrip(trip);
+    const days = calculateDays(trip.startDate, trip.endDate);
+    const ideas = activities[trip.travelStyle] || activities.playa;
 
-    const plans =
-        activities[normalizedTrip.travelStyle] || activities.aventura;
-
-    const totalDays = Math.min(normalizedTrip.days, 30);
-
-    return Array.from({ length: totalDays }, (_, index) => {
-        let date = "";
-
-        if (normalizedTrip.startDate) {
-            const start = new Date(
-                `${normalizedTrip.startDate}T12:00:00`
-            );
-
-            start.setDate(start.getDate() + index);
-
-            date = [
-                start.getFullYear(),
-                String(start.getMonth() + 1).padStart(2, "0"),
-                String(start.getDate()).padStart(2, "0")
-            ].join("-");
-        }
-
+    return Array.from({ length: Math.min(days, 14) }, (_, index) => {
+        const idea = ideas[index % ideas.length];
         return {
             day: index + 1,
-            date,
-
-            activities: plans.map((activity, activityIndex) => ({
-                time: activity[0],
-                title: activity[1],
-
-                note: [
-                    "Empieza el día a tu ritmo.",
-                    "Adapta el plan según el clima y tus preferencias.",
-                    "Guarda un recuerdo especial de este momento.",
-                    "Revisa tu presupuesto antes de terminar el día."
-                ][activityIndex]
-            }))
+            title: idea[0],
+            description: idea[1]
         };
     });
 }
 
-/* ===================== MOSTRAR ITINERARIO ===================== */
+/* -------------------- MOSTRAR ITINERARIO -------------------- */
 
 function renderItinerary(trip) {
-    const normalizedTrip = normalizeTrip(trip);
+    const result = $("#tripResult");
+    const details = $("#tripDetails");
 
-    if (
-        !Array.isArray(normalizedTrip.itinerary) ||
-        normalizedTrip.itinerary.length === 0
-    ) {
-        normalizedTrip.itinerary = buildItinerary(normalizedTrip);
-    }
+    if (!result || !details || !trip) return;
 
-    const result = byId("tripResult");
-    const details = byId("tripDetails");
+    const itinerary = buildItinerary(trip);
+    const days = calculateDays(trip.startDate, trip.endDate);
 
-    if (!result || !details) {
-        console.warn(
-            "No se encontraron #tripResult o #tripDetails en crear-viaje.html."
-        );
-        return;
-    }
+    result.hidden = false;
 
     details.innerHTML = `
-        <div class="trip-result-cover">
-            <img
-                src="${escapeHTML(normalizedTrip.image)}"
-                alt="Paisaje de ${escapeHTML(normalizedTrip.destination)}"
-                onerror="this.onerror=null;this.src='${getDestinationImage("naturaleza")}';"
-            >
-
-            <div class="trip-result-overlay">
-                <p class="eyebrow">TU PRÓXIMA AVENTURA</p>
-
-                <h2>${escapeHTML(normalizedTrip.destination)}</h2>
-
-                <p>
-                    ${escapeHTML(normalizedTrip.styleName)}
-                    ·
-                    ${normalizedTrip.days}
-                    ${normalizedTrip.days === 1 ? "día" : "días"}
-                </p>
+        <div class="itinerary-cover">
+            <p class="eyebrow">TU PRÓXIMA HISTORIA</p>
+            <h3>${escapeHTML(trip.destination || "Mi escapada")}</h3>
+            <p>${escapeHTML(styleNames[trip.travelStyle] || "Viaje a tu estilo")}</p>
+            <div class="trip-meta">
+                <span>◷ ${days} día(s)</span>
+                <span>♧ ${money(trip.budget)}</span>
+                <span>♡ ${escapeHTML(trip.travelersLabel || "A tu ritmo")}</span>
             </div>
+            <p>${formatDate(trip.startDate)} — ${formatDate(trip.endDate)}</p>
         </div>
 
-        <div class="trip-summary">
-            <div>
-                <span>Fechas</span>
-                <strong>
-                    ${escapeHTML(formatDate(normalizedTrip.startDate))}
-                    –
-                    ${escapeHTML(formatDate(normalizedTrip.endDate))}
-                </strong>
-            </div>
-
-            <div>
-                <span>Viajeros</span>
-                <strong>${normalizedTrip.travelers}</strong>
-            </div>
-
-            <div>
-                <span>Presupuesto</span>
-                <strong>${escapeHTML(money(normalizedTrip.budget))}</strong>
-            </div>
-        </div>
+        <div id="clima-destino"></div>
 
         <div class="itinerary-days">
-            ${normalizedTrip.itinerary.map(day => `
+            ${itinerary.map(day => `
                 <article class="itinerary-day">
-                    <div class="itinerary-day-heading">
-                        <span>DÍA ${day.day}</span>
-
-                        <h3>
-                            ${escapeHTML(
-                                day.date
-                                    ? formatDate(day.date)
-                                    : `Día ${day.day} de tu viaje`
-                            )}
-                        </h3>
-                    </div>
-
-                    <div class="itinerary-activities">
-                        ${(day.activities || []).map(activity => `
-                            <div class="itinerary-activity">
-                                <span class="activity-time">
-                                    ${escapeHTML(activity.time || "Plan")}
-                                </span>
-
-                                <div>
-                                    <h4>
-                                        ${escapeHTML(
-                                            activity.title || "Tiempo libre"
-                                        )}
-                                    </h4>
-
-                                    <p>
-                                        ${escapeHTML(
-                                            activity.note ||
-                                            "Disfruta el momento a tu manera."
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
-                        `).join("")}
-                    </div>
+                    <span class="day-number">DÍA ${day.day}</span>
+                    <h4>${escapeHTML(day.title)}</h4>
+                    <p>${escapeHTML(day.description)}</p>
                 </article>
             `).join("")}
         </div>
+        <p class="muted small-note">
+            Estas son ideas iniciales para inspirarte. Verifica horarios,
+            disponibilidad, transporte y precios reales antes de viajar.
+        </p>
     `;
 
-    result.hidden = false;
-    result.style.display = "block";
-
-    const saveButton =
-        byId("saveTripBtn") ||
-        byId("saveTrip");
-
+    const saveButton = $("#saveTripButton");
     if (saveButton) {
-        const alreadySaved = getTrips().some(
-            savedTrip => savedTrip.id === normalizedTrip.id
-        );
-
-        saveButton.textContent = alreadySaved
-            ? "Viaje guardado ✓"
-            : "Guardar mi viaje";
-
-        saveButton.disabled = alreadySaved;
-
         saveButton.onclick = () => {
-            saveCurrentTrip(normalizedTrip);
+            const trips = getTrips();
+            const newTrip = {
+                ...trip,
+                id: String(Date.now()),
+                createdAt: new Date().toISOString()
+            };
+            saveTrips([newTrip, ...trips]);
+            saveButton.disabled = true;
+            saveButton.textContent = "Viaje guardado ✓";
+            const message = $("#saveMessage");
+            if (message) {
+                message.textContent = "¡Listo! Tu aventura ya está en Mis viajes.";
+            }
+            updateUserInterface();
         };
     }
 
-    result.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+    setTimeout(() => {
+        inicializarMapaYClima(trip.destination);
+    }, 200);
 }
 
-/* ===================== GUARDAR UN VIAJE ===================== */
+/* -------------------- TARJETAS DE VIAJES GUARDADOS -------------------- */
 
-function saveCurrentTrip(trip) {
-    if (isGuest()) {
-        alert(
-            "Inicia sesión o crea una cuenta para guardar tus viajes en tu perfil."
-        );
-
-        window.location.href = "login.html";
-        return false;
-    }
-
-    const normalizedTrip = normalizeTrip(trip);
-    const trips = getTrips();
-
-    const alreadyExists = trips.some(
-        savedTrip => savedTrip.id === normalizedTrip.id
-    );
-
-    if (alreadyExists) {
-        alert("Este viaje ya está guardado en tu colección.");
-        refreshTripLists();
-        return false;
-    }
-
-    normalizedTrip.id = String(Date.now());
-    normalizedTrip.createdAt = new Date().toISOString();
-
-    const success = saveTrips([
-        normalizedTrip,
-        ...trips
-    ]);
-
-    if (!success) {
-        alert(
-            "No se pudo guardar el viaje. Revisa el almacenamiento de tu navegador."
-        );
-        return false;
-    }
-
-    setData(STORAGE.lastTrip, normalizedTrip);
-
-    const saveButton =
-        byId("saveTripBtn") ||
-        byId("saveTrip");
-
-    if (saveButton) {
-        saveButton.textContent = "Viaje guardado ✓";
-        saveButton.disabled = true;
-    }
-
-    refreshTripLists();
-
-    alert(
-        "¡Tu viaje quedó guardado! Ya puedes encontrarlo en Mis viajes."
-    );
-
-    return true;
-}/* ===================== TARJETAS DE VIAJES ===================== */
-
-function renderTripCards(container, trips, emptyMessage = "Aún no tienes viajes guardados.") {
+function renderTripCards(container, trips, emptyMessage) {
     if (!container) return;
 
-    if (!trips || trips.length === 0) {
+    if (!Array.isArray(trips) || trips.length === 0) {
         container.innerHTML = `
-            <div class="empty-trips">
-                <div class="empty-trips-icon">✦</div>
-                <h3>Tu próxima aventura te espera</h3>
+            <div class="empty-state">
+                <span class="empty-symbol">✧</span>
+                <h3>Tu próxima historia comienza aquí</h3>
                 <p>${escapeHTML(emptyMessage)}</p>
-                <a href="explorar.html" class="btn btn-primary">
-                    Explorar destinos
-                </a>
+                <a class="button" href="crear-viaje.html">Crear mi aventura ↗</a>
             </div>
         `;
         return;
     }
 
-    container.innerHTML = trips.map(rawTrip => {
-        const trip = normalizeTrip(rawTrip);
+    container.innerHTML = trips.map(trip => `
+        <article class="saved-trip-card">
+            <div class="saved-trip-art">✧</div>
+            <div class="saved-trip-content">
+                <span class="eyebrow">${escapeHTML(styleNames[trip.travelStyle] || "Mi escapada")}</span>
+                <h3>${escapeHTML(trip.destination || "Mi escapada")}</h3>
+                <p>${formatDate(trip.startDate)} — ${formatDate(trip.endDate)}</p>
+                <p>${calculateDays(trip.startDate, trip.endDate)} día(s) · ${money(trip.budget)}</p>
+                <button class="text-link view-trip" data-id="${escapeHTML(trip.id)}" type="button">Ver itinerario ↗</button>
+                <button class="text-link delete-trip" data-id="${escapeHTML(trip.id)}" type="button">Eliminar</button>
+            </div>
+        </article>
+    `).join("");
 
-        return `
-            <article class="saved-trip-card" data-trip-id="${escapeHTML(trip.id)}">
-                <div class="saved-trip-image">
-                    <img
-                        src="${escapeHTML(trip.image)}"
-                        alt="${escapeHTML(trip.destination)}"
-                        loading="lazy"
-                        onerror="this.onerror=null;this.src='${getDestinationImage("naturaleza")}';"
-                    >
-
-                    <span class="saved-trip-tag">
-                        ${escapeHTML(trip.styleName)}
-                    </span>
-                </div>
-
-                <div class="saved-trip-content">
-                    <h3>${escapeHTML(trip.destination)}</h3>
-
-                    <p class="saved-trip-date">
-                        ${escapeHTML(formatDate(trip.startDate))}
-                        ${trip.endDate
-                            ? ` – ${escapeHTML(formatDate(trip.endDate))}`
-                            : ""}
-                    </p>
-
-                    <div class="saved-trip-info">
-                        <span>
-                            ${trip.days} ${trip.days === 1 ? "día" : "días"}
-                        </span>
-
-                        <span>${trip.travelers} viajeros</span>
-                    </div>
-
-                    <p class="saved-trip-budget">
-                        ${escapeHTML(money(trip.budget))}
-                    </p>
-
-                    <div class="saved-trip-actions">
-                        <button
-                            type="button"
-                            class="btn btn-primary view-trip"
-                            data-action="view-trip"
-                            data-id="${escapeHTML(trip.id)}"
-                        >
-                            Ver itinerario
-                        </button>
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary delete-trip"
-                            data-action="delete-trip"
-                            data-id="${escapeHTML(trip.id)}"
-                            aria-label="Eliminar viaje a ${escapeHTML(trip.destination)}"
-                        >
-                            Eliminar
-                        </button>
-                    </div>
-                </div>
-            </article>
-        `;
-    }).join("");
-
-    container.querySelectorAll('[data-action="view-trip"]').forEach(button => {
+    container.querySelectorAll(".view-trip").forEach(button => {
         button.addEventListener("click", () => {
-            const trip = trips
-                .map(normalizeTrip)
-                .find(item => item.id === button.dataset.id);
-
-            if (!trip) return;
-
-            setData(STORAGE.lastTrip, trip);
-            setData(
-                `${STORAGE.selectedTripPrefix}${getUserEmail()}`,
-                trip
-            );
-
-            window.location.href =
-                `crear-viaje.html?ver=${encodeURIComponent(trip.id)}`;
+            const trip = getTrips().find(item => String(item.id) === button.dataset.id);
+            if (!trip) {
+                alert("No encontramos ese viaje guardado.");
+                return;
+            }
+            setData("getaway_selected_trip_" + getUserEmail(), trip);
+            window.location.href = "crear-viaje.html?ver=" + encodeURIComponent(trip.id);
         });
     });
 
-    container.querySelectorAll('[data-action="delete-trip"]').forEach(button => {
+    container.querySelectorAll(".delete-trip").forEach(button => {
         button.addEventListener("click", () => {
-            const tripId = button.dataset.id;
-
-            const confirmed = confirm(
-                "¿Seguro que quieres eliminar este viaje?"
-            );
-
+            const confirmed = confirm("¿Quieres eliminar este viaje guardado?");
             if (!confirmed) return;
-
-            const updatedTrips = getTrips().filter(
-                trip => trip.id !== tripId
-            );
-
-            if (saveTrips(updatedTrips)) {
-                refreshTripLists();
-            } else {
-                alert("No se pudo eliminar el viaje.");
-            }
+            const remainingTrips = getTrips().filter(item => String(item.id) !== button.dataset.id);
+            saveTrips(remainingTrips);
+            renderTripCards(container, remainingTrips, emptyMessage);
+            updateUserInterface();
         });
     });
 }
 
-/* ===================== ACTUALIZAR LISTAS ===================== */
-
-function refreshTripLists() {
-    const trips = getTrips();
-
-    const allTripsContainer =
-        byId("allTrips") ||
-        byId("savedTrips") ||
-        byId("tripsGrid");
-
-    if (allTripsContainer) {
-        renderTripCards(
-            allTripsContainer,
-            trips,
-            "Crea tu primer itinerario y guárdalo aquí."
-        );
-    }
-
-    const profileTripsContainer =
-        byId("profileTrips") ||
-        byId("myTrips");
-
-    if (
-        profileTripsContainer &&
-        profileTripsContainer !== allTripsContainer
-    ) {
-        renderTripCards(
-            profileTripsContainer,
-            trips.slice(0, 3),
-            "Cuando guardes un viaje, aparecerá aquí."
-        );
-    }
-
-    const tripCount = byId("tripCount");
-
-    if (tripCount) {
-        tripCount.textContent = String(trips.length);
-    }
-}
-
-/* ===================== REGISTRO DE USUARIOS ===================== */
-
-function setupRegister() {
-    const form =
-        byId("registerForm") ||
-        byId("registroForm") ||
-        $('form[data-auth="register"]');
-
-    if (!form) return;
-
-    form.addEventListener("submit", event => {
-        event.preventDefault();
-
-        const nameInput =
-            byId("name") ||
-            byId("fullName") ||
-            byId("nombre") ||
-            $('[name="name"]', form) ||
-            $('[name="nombre"]', form);
-
-        const emailInput =
-            byId("email") ||
-            $('[name="email"]', form);
-
-        const passwordInput =
-            byId("password") ||
-            $('[name="password"]', form);
-
-        const confirmInput =
-            byId("confirmPassword") ||
-            byId("passwordConfirm") ||
-            $('[name="confirmPassword"]', form) ||
-            $('[name="confirm-password"]', form);
-
-        const name = nameInput?.value.trim() || "";
-        const email = emailInput?.value.trim().toLowerCase() || "";
-        const password = passwordInput?.value || "";
-        const confirmPassword = confirmInput?.value || "";
-
-        if (!name || !email || !password) {
-            alert("Completa todos los campos obligatorios.");
-            return;
-        }
-
-        if (password.length < 6) {
-            alert("Tu contraseña debe tener al menos 6 caracteres.");
-            return;
-        }
-
-        if (confirmInput && password !== confirmPassword) {
-            alert("Las contraseñas no coinciden.");
-            return;
-        }
-
-        const users = getData(STORAGE.users, []);
-
-        if (
-            users.some(user =>
-                String(user.email).toLowerCase() === email
-            )
-        ) {
-            alert("Ya existe una cuenta con ese correo.");
-            return;
-        }
-
-        const user = {
-            id: String(Date.now()),
-            name,
-            email,
-            password,
-            createdAt: new Date().toISOString()
-        };
-
-        users.push(user);
-
-        if (!setData(STORAGE.users, users)) {
-            alert("No se pudo crear la cuenta. Inténtalo nuevamente.");
-            return;
-        }
-
-        setSession({
-            id: user.id,
-            name: user.name,
-            email: user.email
-        });
-
-        alert("¡Tu cuenta está lista! Bienvenida a Get Away.");
-
-        window.location.href = "app.html";
-    });
-}
-
-/* ===================== INICIO DE SESIÓN ===================== */
-
-function setupLogin() {
-    const form =
-        byId("loginForm") ||
-        byId("inicioSesionForm") ||
-        $('form[data-auth="login"]');
-
-    if (!form) return;
-
-    form.addEventListener("submit", event => {
-        event.preventDefault();
-
-        const emailInput =
-            byId("email") ||
-            $('[name="email"]', form);
-
-        const passwordInput =
-            byId("password") ||
-            $('[name="password"]', form);
-
-        const email = emailInput?.value.trim().toLowerCase() || "";
-        const password = passwordInput?.value || "";
-
-        const users = getData(STORAGE.users, []);
-
-        const user = users.find(item =>
-            String(item.email).toLowerCase() === email &&
-            item.password === password
-        );
-
-        if (!user) {
-            alert("Correo o contraseña incorrectos.");
-            return;
-        }
-
-        setSession({
-            id: user.id,
-            name: user.name,
-            email: user.email
-        });
-
-        alert(`¡Qué bueno tenerte de vuelta, ${user.name}!`);
-
-        window.location.href = "app.html";
-    });
-}/* ===================== FORMULARIO DEL ITINERARIO ===================== */
-
-function setupPlanner() {
-    const form =
-        byId("tripForm") ||
-        byId("createTripForm");
-
-    if (!form) return;
-
-    const steps = $$(".step", form);
-    let currentStep = 1;
-
-    const getValue = (...ids) => {
-        for (const id of ids) {
-            const element = byId(id) || $(`[name="${id}"]`, form);
-
-            if (element && element.value !== undefined) {
-                return element.value.trim();
-            }
-        }
-
-        return "";
-    };
-
-    const showStep = stepNumber => {
-        currentStep = stepNumber;
-
-        steps.forEach((step, index) => {
-            step.hidden = index + 1 !== stepNumber;
-            step.classList.toggle("active", index + 1 === stepNumber);
-        });
-
-        const indicator = byId("stepIndicator");
-
-        if (indicator) {
-            indicator.textContent = `Paso ${stepNumber} de ${steps.length || 3}`;
-        }
-
-        form.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    };
-
-    const destinationField =
-        byId("destination") ||
-        $('[name="destination"]', form);
-
-    // Recibe el destino elegido desde Explorar.
-    const selectedDestination =
-        sessionStorage.getItem("getaway_destination");
-
-    if (
-        destinationField &&
-        selectedDestination &&
-        !destinationField.value
-    ) {
-        destinationField.value = selectedDestination;
-    }
-
-    const startField =
-        byId("startDate") ||
-        $('[name="startDate"]', form);
-
-    const endField =
-        byId("endDate") ||
-        $('[name="endDate"]', form);
-
-    if (startField && endField) {
-        startField.addEventListener("change", () => {
-            if (startField.value) {
-                endField.min = startField.value;
-
-                if (
-                    endField.value &&
-                    endField.value < startField.value
-                ) {
-                    endField.value = startField.value;
-                }
-            }
-        });
-    }
-
-    const updatePreview = () => {
-        const destination = getValue("destination") || "Tu destino";
-        const style = getValue("travelStyle", "style") || "aventura";
-        const travelers = Number(getValue("travelers", "personas")) || 1;
-        const budget = Number(getValue("budget", "presupuesto")) || 0;
-        const startDate = getValue("startDate");
-        const endDate = getValue("endDate");
-        const days = calculateDays(startDate, endDate);
-
-        const previewDestination = byId("previewDestination");
-        const previewImage = byId("previewImage");
-        const previewStyle = byId("previewStyle");
-        const previewTravelers = byId("previewTravelers");
-        const previewDuration = byId("previewDuration");
-        const previewBudget = byId("previewBudget");
-
-        if (previewDestination) {
-            previewDestination.textContent = destination;
-        }
-
-        if (previewImage) {
-            previewImage.src = getDestinationImage(destination);
-            previewImage.alt = `Destino: ${destination}`;
-        }
-
-        if (previewStyle) {
-            previewStyle.textContent =
-                styleNames[style.toLowerCase()] || style;
-        }
-
-        if (previewTravelers) {
-            previewTravelers.textContent =
-                `${travelers} ${travelers === 1 ? "viajero" : "viajeros"}`;
-        }
-
-        if (previewDuration) {
-            previewDuration.textContent =
-                `${days} ${days === 1 ? "día" : "días"}`;
-        }
-
-        if (previewBudget) {
-            previewBudget.textContent = money(budget);
-        }
-    };
-
-    form.addEventListener("input", updatePreview);
-    form.addEventListener("change", updatePreview);
-
-    const next1 = byId("next1");
-    const next2 = byId("next2");
-    const back2 = byId("back2");
-    const back3 = byId("back3");
-
-    next1?.addEventListener("click", () => {
-        if (!destinationField?.value.trim()) {
-            alert("Primero elige tu destino.");
-            destinationField?.focus();
-            return;
-        }
-
-        if (
-            startField?.value &&
-            endField?.value &&
-            endField.value < startField.value
-        ) {
-            alert("La fecha de regreso no puede ser anterior a la salida.");
-            return;
-        }
-
-        showStep(2);
-    });
-
-    next2?.addEventListener("click", () => {
-        showStep(3);
-        updatePreview();
-    });
-
-    back2?.addEventListener("click", () => showStep(1));
-    back3?.addEventListener("click", () => showStep(2));
-
-    const editButton =
-        byId("editTripBtn") ||
-        byId("editTrip");
-
-    editButton?.addEventListener("click", () => {
-        showStep(1);
-    });
-
-    // Abre un viaje previamente guardado desde Mis viajes.
-    const requestedTripId = new URLSearchParams(
-        window.location.search
-    ).get("ver");
-
-    if (requestedTripId) {
-        const selectedTrip = getTrips().find(
-            trip => trip.id === requestedTripId
-        );
-
-        if (selectedTrip) {
-            if (destinationField) {
-                destinationField.value = selectedTrip.destination;
-            }
-
-            const styleField =
-                byId("travelStyle") ||
-                $('[name="travelStyle"]', form) ||
-                byId("style");
-
-            if (styleField) {
-                styleField.value = selectedTrip.travelStyle;
-            }
-
-            if (startField) {
-                startField.value = selectedTrip.startDate;
-            }
-
-            if (endField) {
-                endField.value = selectedTrip.endDate;
-            }
-
-            const travelersField =
-                byId("travelers") ||
-                $('[name="travelers"]', form);
-
-            if (travelersField) {
-                travelersField.value = selectedTrip.travelers;
-            }
-
-            const budgetField =
-                byId("budget") ||
-                $('[name="budget"]', form);
-
-            if (budgetField) {
-                budgetField.value = selectedTrip.budget;
-            }
-
-            renderItinerary(selectedTrip);
-            updatePreview();
-            return;
-        }
-    }
-
-    form.addEventListener("submit", event => {
-        event.preventDefault();
-
-        const destination = getValue("destination");
-        const startDate = getValue("startDate");
-        const endDate = getValue("endDate");
-
-        const style =
-            getValue("travelStyle", "style") || "aventura";
-
-        const travelers = Number(
-            getValue("travelers", "personas")
-        ) || 1;
-
-        const budget = Number(
-            getValue("budget", "presupuesto")
-        ) || 0;
-
-        if (!destination) {
-            alert("Elige el destino de tu aventura.");
-            return;
-        }
-
-        if (startDate && endDate && endDate < startDate) {
-            alert("Revisa las fechas de tu viaje.");
-            return;
-        }
-
-        const trip = normalizeTrip({
-            id: String(Date.now()),
-            destination,
-            startDate,
-            endDate,
-            travelStyle: style,
-            travelers,
-            budget,
-            createdAt: new Date().toISOString()
-        });
-
-        trip.itinerary = buildItinerary(trip);
-
-        setData(STORAGE.lastTrip, trip);
-
-        renderItinerary(trip);
-
-        sessionStorage.removeItem("getaway_destination");
-    });
-
-    updatePreview();
-
-    if (steps.length) {
-        showStep(1);
-    }
-}
-
-/* ===================== INFORMACIÓN DEL USUARIO ===================== */
+/* -------------------- ACTUALIZAR USUARIO -------------------- */
 
 function updateUserInterface() {
     const name = getUserName();
     const email = getUserEmail();
 
-    [
-        "userName",
-        "profileName",
-        "welcomeName",
-        "accountName"
-    ].forEach(id => {
-        const element = byId(id);
+    const navUser = $("#navUser");
+    const welcomeUser = $("#welcomeUser");
+    const navAvatar = $("#navAvatar");
+    const profileName = $("#profileName");
+    const profileEmail = $("#profileEmail");
+    const profileAvatar = $("#profileAvatar");
+    const profileTrips = $("#profileTrips");
+    const nameInput = $("#editName");
 
-        if (element) {
-            element.textContent = name;
-        }
-    });
-
-    [
-        "userEmail",
-        "profileEmail",
-        "accountEmail"
-    ].forEach(id => {
-        const element = byId(id);
-
-        if (element) {
-            element.textContent =
-                email === "invitada@getaway.local" ? "" : email;
-        }
-    });
-
-    [
-        "userAvatar",
-        "profileAvatar",
-        "avatarInitial"
-    ].forEach(id => {
-        const element = byId(id);
-
-        if (element) {
-            element.textContent = name.charAt(0).toUpperCase() || "V";
-        }
-    });
+    if (navUser) navUser.textContent = name;
+    if (welcomeUser) welcomeUser.textContent = name;
+    if (navAvatar) navAvatar.textContent = name.charAt(0).toUpperCase();
+    if (profileName) profileName.textContent = name;
+    if (profileEmail) profileEmail.textContent = email;
+    if (profileAvatar) profileAvatar.textContent = name.charAt(0).toUpperCase();
+    if (profileTrips) profileTrips.textContent = getTrips().length;
+    if (nameInput) nameInput.value = name;
 }
 
-/* ===================== PERFIL ===================== */
+/* -------------------- CREAR VIAJE -------------------- */
 
-function setupProfile() {
-    updateUserInterface();
-
-    const nameInput =
-        byId("profileNameInput") ||
-        byId("editName");
-
-    const saveProfileButton =
-        byId("saveProfileBtn") ||
-        byId("saveProfile");
-
-    saveProfileButton?.addEventListener("click", () => {
-        const newName = nameInput?.value.trim();
-
-        if (!newName) {
-            alert("Escribe tu nombre.");
-            return;
-        }
-
-        const session = getSession();
-
-        if (!session) {
-            alert("Inicia sesión para modificar tu perfil.");
-            return;
-        }
-
-        session.name = newName;
-
-        if (session.user) {
-            session.user.name = newName;
-        }
-
-        setSession(session);
-
-        const users = getData(STORAGE.users, []);
-        const email = getUserEmail();
-
-        const updatedUsers = users.map(user =>
-            user.email.toLowerCase() === email
-                ? { ...user, name: newName }
-                : user
-        );
-
-        setData(STORAGE.users, updatedUsers);
-
-        updateUserInterface();
-
-        alert("Tu perfil se actualizó.");
-    });
-
-    refreshTripLists();
-}
-
-/* ===================== CONFIGURACIÓN ===================== */
-
-function setupSettings() {
-    const form =
-        byId("settingsForm") ||
-        byId("preferencesForm");
-
+function setupPlanner() {
+    const form = $("#tripForm");
     if (!form) return;
 
-    const preferences = getData(STORAGE.preferences, {});
+    const params = new URLSearchParams(window.location.search);
+    const selected = getData("getaway_selected_trip_" + getUserEmail(), null);
 
-    Object.entries(preferences).forEach(([key, value]) => {
-        const input = form.querySelector(`[name="${key}"]`);
+    if (selected && params.get("ver") === String(selected.id)) {
+        const fields = {
+            destination: selected.destination || "",
+            startDate: selected.startDate || "",
+            endDate: selected.endDate || "",
+            budget: selected.budget || "",
+            travelers: String(selected.travelers || 1),
+            travelStyle: selected.travelStyle || "playa"
+        };
 
-        if (input) {
-            if (input.type === "checkbox") {
-                input.checked = Boolean(value);
-            } else {
-                input.value = value;
-            }
-        }
-    });
+        Object.entries(fields).forEach(([id, value]) => {
+            const field = document.getElementById(id);
+            if (field) field.value = value;
+        });
+
+        renderItinerary(selected);
+        localStorage.removeItem("getaway_selected_trip_" + getUserEmail());
+        return;
+    }
+
+    const destination = sessionStorage.getItem("getaway_destination");
+    const style = sessionStorage.getItem("getaway_style");
+    const destinationInput = $("#destination");
+    const styleInput = $("#travelStyle");
+
+    if (destination && destinationInput) {
+        destinationInput.value = destination;
+        sessionStorage.removeItem("getaway_destination");
+    }
+
+    if (style && styleInput) {
+        styleInput.value = style;
+        sessionStorage.removeItem("getaway_style");
+    }
 
     form.addEventListener("submit", event => {
         event.preventDefault();
 
-        const updatedPreferences = {};
+        const destinationField = $("#destination");
+        const startField = $("#startDate");
+        const endField = $("#endDate");
+        const budgetField = $("#budget");
+        const travelersField = $("#travelers");
+        const styleField = $("#travelStyle");
 
-        form.querySelectorAll("input, select, textarea").forEach(input => {
-            if (!input.name) return;
+        if (!destinationField || !startField || !endField || !budgetField || !travelersField || !styleField) {
+            alert("Falta un campo del formulario.");
+            return;
+        }
 
-            updatedPreferences[input.name] =
-                input.type === "checkbox"
-                    ? input.checked
-                    : input.value;
-        });
+        const trip = {
+            destination: destinationField.value.trim(),
+            startDate: startField.value,
+            endDate: endField.value,
+            budget: Number(budgetField.value),
+            travelers: Number(travelersField.value || 1),
+            travelStyle: styleField.value || "playa",
+            travelersLabel: travelersField.selectedOptions?.[0]?.textContent || "A tu ritmo"
+        };
 
-        if (setData(STORAGE.preferences, updatedPreferences)) {
-            alert("Tus preferencias se guardaron.");
-        } else {
-            alert("No se pudieron guardar tus preferencias.");
+        if (!trip.destination || !trip.startDate || !trip.endDate || trip.budget <= 0) {
+            alert("Completa todos los campos para crear tu itinerario.");
+            return;
+        }
+
+        if (trip.endDate < trip.startDate) {
+            alert("La fecha de regreso no puede ser anterior a la salida.");
+            return;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const departure = new Date(trip.startDate + "T00:00:00");
+
+        if (departure < today) {
+            alert("Elige una fecha de salida válida.");
+            return;
+        }
+
+        renderItinerary(trip);
+
+        const saveButton = $("#saveTripButton");
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.textContent = "Guardar viaje";
         }
     });
 }
 
-/* ===================== CERRAR SESIÓN ===================== */
+/* -------------------- EXPLORAR DESTINOS (CON REST COUNTRIES API + FAVORITOS) -------------------- */
+
+async function setupExplore() {
+    const grid = $("#destinationGrid");
+    if (!grid) return;
+
+    const searchInput = $("#searchInput");
+    const countLabel = $("#destinationCount");
+    const emptyMsg = $("#emptyMessage");
+
+    // Destinos locales destacados
+    const localDestinations = [
+        { name: "Cartagena", capital: "Bolívar", region: "Americas", population: 1028736, style: "playa", description: "Murallas, atardeceres y brisa caribeña.", image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=85" },
+        { name: "Santa Marta", capital: "Magdalena", region: "Americas", population: 538612, style: "aventura", description: "Montañas, mar y naturaleza para explorar.", image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=85" },
+        { name: "Medellín", capital: "Antioquia", region: "Americas", population: 2569007, style: "ciudad", description: "Cultura, cafés y rincones creativos.", image: "https://images.unsplash.com/photo-1560347876-aeef00ee58a1?auto=format&fit=crop&w=900&q=85" },
+        { name: "Bogotá", capital: "Cundinamarca", region: "Americas", population: 7901653, style: "cultura", description: "Arte, historia y gastronomía urbana.", image: "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=900&q=85" },
+        { name: "Eje Cafetero", capital: "Armenia / Pereira", region: "Americas", population: 2500000, style: "naturaleza", description: "Paisajes verdes y experiencias rurales.", image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85" },
+        { name: "San Andrés", capital: "San Andrés", region: "Americas", population: 65228, style: "playa", description: "Aguas turquesas y días junto al mar.", image: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=900&q=85" }
+    ];
+
+    grid.innerHTML = `<p class="muted">Cargando destinos y países desde REST Countries API...</p>`;
+
+    // Consultar países reales desde REST Countries API
+    const apiPaises = await consultarPaisesAPI();
+    const paisesMapeados = apiPaises.slice(0, 30).map(pais => {
+        const nombreES = pais.translations?.spa?.common || pais.name?.common || "País";
+        const capital = Array.isArray(pais.capital) ? pais.capital[0] : "No definida";
+        const idiomas = pais.languages ? Object.values(pais.languages).join(", ") : "N/A";
+        const monedas = pais.currencies ? Object.values(pais.currencies).map(m => m.name).join(", ") : "N/A";
+
+        return {
+            name: nombreES,
+            capital: capital,
+            region: pais.region || "Mundo",
+            population: pais.population || 0,
+            style: (pais.region || "").toLowerCase(),
+            description: `Capital: ${capital} · Idiomas: ${idiomas} · Moneda: ${monedas}`,
+            image: pais.flags?.svg || pais.flags?.png || ""
+        };
+    });
+
+    const allDestinations = [...localDestinations, ...paisesMapeados];
+    let currentFilter = "todos";
+
+    function draw() {
+        const query = (searchInput?.value || "").trim().toLowerCase();
+
+        const filtered = allDestinations.filter(place => {
+            const matchFilter =
+                currentFilter === "todos" ||
+                place.style === currentFilter ||
+                place.region.toLowerCase() === currentFilter;
+
+            const matchSearch =
+                !query ||
+                place.name.toLowerCase().includes(query) ||
+                place.capital.toLowerCase().includes(query) ||
+                place.region.toLowerCase().includes(query);
+
+            return matchFilter && matchSearch;
+        });
+
+        if (countLabel) {
+            countLabel.textContent = `${filtered.length} destino(s) encontrados`;
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = "";
+            if (emptyMsg) emptyMsg.style.display = "block";
+            return;
+        }
+
+        if (emptyMsg) emptyMsg.style.display = "none";
+
+        grid.innerHTML = filtered.map(place => {
+            const favActive = isFavorite(place.name);
+            return `
+                <article class="destination-card">
+                    <img src="${escapeHTML(place.image)}" alt="${escapeHTML(place.name)}" loading="lazy">
+                    <div class="destination-card-content">
+                        <span class="eyebrow">${escapeHTML(place.region)} · Capital: ${escapeHTML(place.capital)}</span>
+                        <h3>${escapeHTML(place.name)}</h3>
+                        <p>${escapeHTML(place.description)}</p>
+                        <p><small>Población: ${Number(place.population).toLocaleString("es-CO")} hab.</small></p>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                            <button class="button button-small plan-destination" data-destination="${escapeHTML(place.name)}" data-style="${escapeHTML(place.style)}" type="button">Planear ↗</button>
+                            <button class="button button-small button-outline fav-destination" data-name="${escapeHTML(place.name)}" data-region="${escapeHTML(place.region)}" data-image="${escapeHTML(place.image)}" type="button">
+                                ${favActive ? "♥ Guardado" : "♡ Favorito"}
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join("");
+
+        grid.querySelectorAll(".plan-destination").forEach(button => {
+            button.addEventListener("click", () => {
+                sessionStorage.setItem("getaway_destination", button.dataset.destination);
+                sessionStorage.setItem("getaway_style", button.dataset.style);
+                window.location.href = "crear-viaje.html";
+            });
+        });
+
+        grid.querySelectorAll(".fav-destination").forEach(button => {
+            button.addEventListener("click", () => {
+                const added = toggleFavorite({
+                    nombre: button.dataset.name,
+                    region: button.dataset.region,
+                    imagen: button.dataset.image
+                });
+                button.textContent = added ? "♥ Guardado" : "♡ Favorito";
+            });
+        });
+    }
+
+    document.querySelectorAll("[data-filter]").forEach(button => {
+        button.addEventListener("click", () => {
+            document.querySelectorAll("[data-filter]").forEach(item => {
+                item.classList.remove("active", "filter-active");
+            });
+            button.classList.add("active", "filter-active");
+            currentFilter = button.dataset.filter;
+            draw();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener("input", draw);
+    }
+
+    draw();
+}
+
+/* -------------------- PERFIL -------------------- */
+
+function setupProfile() {
+    const form = $("#profileForm");
+    if (!form) return;
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+        const nameInput = $("#editName");
+        if (!nameInput) return;
+        const newName = nameInput.value.trim();
+        if (!newName) {
+            alert("Escribe el nombre que quieres mostrar.");
+            return;
+        }
+        const session = getSession();
+        if (!session) {
+            alert("No encontramos una sesión activa.");
+            return;
+        }
+        session.name = newName;
+        session.nombre = newName;
+        if (session.user && typeof session.user === "object") {
+            session.user.name = newName;
+            session.user.nombre = newName;
+        }
+        setData("getaway_demo_session", session);
+        updateUserInterface();
+        const message = $("#profileMessage");
+        if (message) {
+            message.textContent = "Tu nombre se actualizó correctamente.";
+        }
+    });
+}
+
+/* -------------------- CONFIGURACIÓN -------------------- */
+
+function setupSettings() {
+    const form = $("#settingsForm");
+    if (!form) return;
+
+    const settingsKey = "getaway_settings_" + getUserEmail();
+    const settings = getData(settingsKey, { currency: "COP", style: "aventura" });
+
+    const currencyInput = $("#preferredCurrency");
+    const styleInput = $("#preferredStyle");
+
+    if (currencyInput) currencyInput.value = settings.currency || "COP";
+    if (styleInput) styleInput.value = settings.style || "aventura";
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+        const currency = $("#preferredCurrency");
+        const style = $("#preferredStyle");
+        if (!currency || !style) return;
+
+        setData(settingsKey, { currency: currency.value, style: style.value });
+        const message = $("#settingsMessage");
+        if (message) message.textContent = "Tus preferencias se guardaron.";
+    });
+}
+
+/* -------------------- CERRAR SESIÓN -------------------- */
 
 function setupLogout() {
-    const logoutButtons = $$(
-        "#logoutBtn, #logout, [data-action='logout']"
-    );
+    const logoutButton = $("#logoutButton");
+    if (!logoutButton) return;
 
-    logoutButtons.forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
-
-            if (!confirm("¿Quieres cerrar tu sesión?")) {
-                return;
-            }
-
-            try {
-                localStorage.removeItem(STORAGE.session);
-                localStorage.removeItem(STORAGE.sessionBackup);
-            } catch (error) {
-                console.warn("No se pudo cerrar la sesión.", error);
-            }
-
-            window.location.href = "login.html";
-        });
+    logoutButton.addEventListener("click", () => {
+        sessionStorage.removeItem("getaway_demo_session");
+        localStorage.removeItem("getaway_demo_session");
+        window.location.href = "login.html";
     });
 }
 
-/* ===================== BOTONES DE DESTINOS ===================== */
-
-function setupGenericDestinationButtons() {
-    $$("[data-destination]").forEach(button => {
-        // Explorar ya administra los botones de su propia cuadrícula.
-        if (button.closest("#destinationGrid")) return;
-
-        button.addEventListener("click", () => {
-            const destination = button.dataset.destination;
-
-            if (!destination) return;
-
-            sessionStorage.setItem(
-                "getaway_destination",
-                destination
-            );
-
-            window.location.href = "crear-viaje.html";
-        });
-    });
-}
-
-/* ===================== INICIALIZAR GET AWAY ===================== */
+/* -------------------- INICIAR APLICACIÓN -------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
-    setupRegister();
-    setupLogin();
+    updateUserInterface();
+    setupLogout();
+
+    renderTripCards($("#homeTrips"), getTrips().slice(0, 3), "Todavía no has guardado ningún viaje.");
+    renderTripCards($("#allTrips"), getTrips(), "Cuando guardes tu primera aventura, aparecerá aquí.");
+
     setupPlanner();
+    setupExplore();
     setupProfile();
     setupSettings();
-    setupLogout();
-    setupGenericDestinationButtons();
-
-    updateUserInterface();
-    refreshTripLists();
 });
